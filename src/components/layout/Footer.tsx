@@ -1,17 +1,33 @@
+import { Link } from "react-router-dom";
 import { Briefcase, GitBranch, Globe, MessageCircle } from "lucide-react";
 import { ExactLogo } from "../ui/ExactLogo";
 
-interface FooterProps {
-  onNavigate: (route: string) => void;
-}
+const COMPANY_LINKS = [
+  { label: "About Us", to: "/about" },
+  { label: "Team", to: "/team" },
+  { label: "Careers", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
 
-export const Footer = ({ onNavigate }: FooterProps) => (
+const SERVICE_LINKS = [
+  "Web Development",
+  "Mobile Apps",
+  "UI/UX Design",
+  "Cloud DevOps",
+  "Cyber Security",
+];
+
+const LEGAL_LINKS = ["Privacy Policy", "Terms of Service", "Cookie Policy"];
+
+export const Footer = () => (
   <footer className="bg-[#030712] border-t border-white/5 pt-20 pb-10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
         <div className="col-span-2 lg:col-span-2">
           <div className="mb-6">
-            <ExactLogo />
+            <Link to="/" aria-label="Algero Home">
+              <ExactLogo />
+            </Link>
           </div>
           <p className="text-gray-500 mb-8 max-w-sm text-sm leading-relaxed">
             Building scalable, secure, and beautiful digital products for the
@@ -41,18 +57,14 @@ export const Footer = ({ onNavigate }: FooterProps) => (
         <div>
           <h4 className="font-bold text-white mb-6">Company</h4>
           <ul className="space-y-4">
-            {"About Us,Team,Careers,Contact".split(",").map((item) => (
-              <li key={item}>
-                <button
-                  onClick={() =>
-                    onNavigate(
-                      item === "About Us" ? "about" : item.toLowerCase(),
-                    )
-                  }
+            {COMPANY_LINKS.map((item) => (
+              <li key={item.label}>
+                <Link
+                  to={item.to}
                   className="text-sm text-gray-500 hover:text-blue-400 transition-colors"
                 >
-                  {item}
-                </button>
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -60,35 +72,31 @@ export const Footer = ({ onNavigate }: FooterProps) => (
         <div>
           <h4 className="font-bold text-white mb-6">Services</h4>
           <ul className="space-y-4">
-            {"Web Development,Mobile Apps,UI/UX Design,Cloud DevOps,Cyber Security"
-              .split(",")
-              .map((item) => (
-                <li key={item}>
-                  <button
-                    onClick={() => onNavigate("services")}
-                    className="text-sm text-gray-500 hover:text-blue-400 transition-colors"
-                  >
-                    {item}
-                  </button>
-                </li>
-              ))}
+            {SERVICE_LINKS.map((item) => (
+              <li key={item}>
+                <Link
+                  to="/services"
+                  className="text-sm text-gray-500 hover:text-blue-400 transition-colors"
+                >
+                  {item}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div>
           <h4 className="font-bold text-white mb-6">Legal</h4>
           <ul className="space-y-4">
-            {"Privacy Policy,Terms of Service,Cookie Policy"
-              .split(",")
-              .map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-blue-400 transition-colors"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
+            {LEGAL_LINKS.map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  className="text-sm text-gray-500 hover:text-blue-400 transition-colors"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

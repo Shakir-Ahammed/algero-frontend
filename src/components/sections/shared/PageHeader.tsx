@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { useScrollReveal } from "../../../hooks/useScrollReveal";
 
 interface PageHeaderProps {
-  title: string | React.ReactNode;
+  title: string | ReactNode;
   subtitle: string;
 }
 

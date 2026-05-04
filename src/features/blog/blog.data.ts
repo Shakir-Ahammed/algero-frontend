@@ -1,4 +1,6 @@
-export const BLOG_POSTS = [
+import type { BlogPost } from "../../types";
+
+export const BLOG_POSTS: BlogPost[] = [
   {
     title: "The Future of Next.js Server Components",
     date: "Oct 24, 2023",

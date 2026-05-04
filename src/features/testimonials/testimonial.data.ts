@@ -1,4 +1,6 @@
-export const TESTIMONIALS = [
+import type { Testimonial } from "../../types";
+
+export const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
     text: "Algero didn't just build an app; they engineered a scalable platform that handled our 10x growth seamlessly. Absolute professionals.",

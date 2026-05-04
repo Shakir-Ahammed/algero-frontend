@@ -5,8 +5,8 @@ export interface Project {
   title: string;
   category: string;
   image: string;
-  tech?: string[];
-  desc?: string;
+  tech: string[];
+  desc: string;
   color?: string;
   features?: string[];
   metrics?: { label: string; value: string }[];
@@ -14,10 +14,8 @@ export interface Project {
 
 export interface Service {
   title: string;
-  desc?: string;
-  description?: string;
-  icon?: ComponentType<SVGProps<SVGSVGElement>>;
-  id?: number;
+  desc: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   features?: string[];
 }
 
@@ -26,11 +24,9 @@ export interface BlogPost {
   category: string;
   date: string;
   image: string;
-  read?: string;
-  readTime?: string;
+  read: string;
   excerpt?: string;
   author?: string;
-  id?: number;
 }
 
 export interface TeamMember {
@@ -46,13 +42,9 @@ export interface TeamMember {
 }
 
 export interface Testimonial {
-  id?: number;
-  text?: string;
-  author?: string;
-  role?: string;
-  avatar?: string;
-  name?: string;
-  company?: string;
-  content?: string;
-  image?: string;
+  id: number;
+  text: string;
+  author: string;
+  role: string;
+  avatar: string;
 }

@@ -1,5 +1,3 @@
-import React from "react";
-
 export const ExactLogo = () => (
   <div className="flex items-center gap-3 group cursor-pointer">
     <svg

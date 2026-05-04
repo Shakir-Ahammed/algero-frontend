@@ -1,10 +1,10 @@
-import React from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export type ButtonVariant = "primary" | "secondary" | "light";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 export const Button = ({

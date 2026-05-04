@@ -6,8 +6,9 @@ import {
   Shield,
   Layers,
 } from "lucide-react";
+import type { Service } from "../../types";
 
-export const SERVICES = [
+export const SERVICES: Service[] = [
   {
     icon: Code2,
     title: "Software Development",
