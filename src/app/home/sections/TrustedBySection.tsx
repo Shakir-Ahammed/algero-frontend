@@ -1,19 +1,32 @@
-export const TrustedBySection = () => (
-  <section className="py-12 border-y border-white/5 relative z-10 bg-white/5 backdrop-blur-sm">
-    <div className="max-w-7xl mx-auto px-4">
-      <p className="text-center text-sm font-semibold text-gray-500 uppercase tracking-widest mb-8 reveal">
-        Trusted by Innovative Teams Worldwide
-      </p>
-      <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 hover:opacity-100 transition-opacity duration-700 reveal reveal-delay-1">
-        {["Vercel", "Stripe", "Linear", "Notion", "Figma"].map((logo, i) => (
-          <div
-            key={i}
-            className="text-2xl font-bold text-gray-300 tracking-tighter"
-          >
-            {logo}
+export const TrustedBySection = () => {
+  const brands = [
+    { name: "Vercel", style: "font-extrabold tracking-[-0.03em]" },
+    { name: "Stripe", style: "font-bold tracking-[-0.01em] italic" },
+    { name: "Linear", style: "font-semibold tracking-tight" },
+    { name: "Notion", style: "font-semibold tracking-tight" },
+    { name: "Figma", style: "font-bold tracking-normal" },
+    { name: "Supabase", style: "font-semibold tracking-tight" },
+  ];
+
+  return (
+    <section className="py-16 border-y border-white/[0.04] relative z-10 bg-white/[0.015]">
+      <div className="max-w-7xl mx-auto px-4">
+        <p className="text-center text-[11px] font-semibold text-gray-500 uppercase tracking-[0.25em] mb-10 reveal">
+          Trusted by Innovative Teams Worldwide
+        </p>
+        <div className="marquee-container">
+          <div className="marquee-track">
+            {[...brands, ...brands, ...brands].map((brand, i) => (
+              <div
+                key={i}
+                className={`text-[1.6rem] ${brand.style} text-gray-600/40 hover:text-gray-300 transition-colors duration-500 cursor-default select-none whitespace-nowrap`}
+              >
+                {brand.name}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
