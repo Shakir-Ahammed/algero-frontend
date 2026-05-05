@@ -1,9 +1,43 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Code2, Smartphone, Paintbrush, Server, Shield, Layers } from "lucide-react";
 import { Button } from "../../../components/ui/Button";
+import { useApiData } from "../../../hooks/useApiData";
 import { SERVICES } from "../../../features/services/service.data";
+import type { Service } from "../../../types";
+
+const ICON_MAP: Record<string, typeof Code2> = {
+  Code2, Smartphone, Paintbrush, Server, Shield, Layers,
+  code2: Code2, smartphone: Smartphone, paintbrush: Paintbrush,
+  server: Server, shield: Shield, layers: Layers,
+};
+
+interface ApiService {
+  id: number;
+  title: string;
+  description: string;
+  icon: string | null;
+  features: string[] | null;
+  is_active: boolean;
+}
+
+function mapApiService(s: ApiService): Service {
+  return {
+    title: s.title,
+    desc: s.description,
+    icon: (s.icon && ICON_MAP[s.icon]) || Code2,
+    features: s.features ?? [],
+  };
+}
 
 export const ServicesPreviewSection = () => {
   const navigate = useNavigate();
+  const { data: apiServices } = useApiData<ApiService[]>("/services", []);
+
+  const services: Service[] = useMemo(
+    () => (apiServices.length > 0 ? apiServices.filter(s => s.is_active).map(mapApiService) : SERVICES),
+    [apiServices]
+  );
 
   return (
     <section className="py-32 relative z-10 section-glow-top">
@@ -33,7 +67,7 @@ export const ServicesPreviewSection = () => {
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {SERVICES.slice(0, 3).map((service, idx) => (
+          {services.slice(0, 3).map((service, idx) => (
             <div
               key={idx}
               className="glass-card card-premium p-8 rounded-3xl group glow-border cursor-pointer reveal"

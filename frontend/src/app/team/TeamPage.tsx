@@ -1,10 +1,41 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Briefcase, MessageCircle, GitBranch, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useApiData } from "../../hooks/useApiData";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { TEAM } from "../../features/team/team.data";
 import { Button } from "../../components/ui/Button";
+import type { TeamMember } from "../../types";
+
+interface ApiTeamMember {
+  id: number;
+  name: string;
+  role: string;
+  bio: string | null;
+  image: string | null;
+  social: {
+    linkedin: string | null;
+    twitter: string | null;
+    github: string | null;
+  } | null;
+}
+
+function mapApiTeam(m: ApiTeamMember): TeamMember {
+  return {
+    name: m.name,
+    role: m.role,
+    bio: m.bio ?? undefined,
+    image:
+      m.image ||
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80",
+    social: {
+      linkedin: m.social?.linkedin || "#",
+      twitter: m.social?.twitter || "#",
+      github: m.social?.github || "#",
+    },
+  };
+}
 
 const SOCIAL_ICONS = [
   { key: "linkedin" as const, Icon: Briefcase, hoverColor: "hover:text-blue-400 hover:bg-blue-400/15" },
@@ -18,6 +49,13 @@ export const TeamPage = () => {
   const [mobileExpandedIdx, setMobileExpandedIdx] = useState<number | null>(null);
   useScrollReveal();
 
+  const { data: apiTeam } = useApiData<ApiTeamMember[]>("/team-members", []);
+
+  const team: TeamMember[] = useMemo(
+    () => (apiTeam.length > 0 ? apiTeam.map(mapApiTeam) : TEAM),
+    [apiTeam]
+  );
+
   const handleMouseEnter = useCallback((idx: number) => {
     setFocusedIdx(idx);
   }, []);
@@ -30,7 +68,7 @@ export const TeamPage = () => {
     setMobileExpandedIdx((prev) => (prev === idx ? null : idx));
   }, []);
 
-  const activeMember = focusedIdx !== null ? TEAM[focusedIdx] : null;
+  const activeMember = focusedIdx !== null ? team[focusedIdx] : null;
 
   return (
     <div className="pb-0 min-h-screen relative">
@@ -52,7 +90,7 @@ export const TeamPage = () => {
           onMouseLeave={handleMouseLeave}
         >
           <div className="grid grid-cols-4 gap-6">
-            {TEAM.map((member, idx) => {
+            {team.map((member, idx) => {
               const isFocused = focusedIdx === idx;
               const isDimmed = focusedIdx !== null && !isFocused;
 
@@ -196,7 +234,7 @@ export const TeamPage = () => {
 
         {/* ===== MOBILE CARDS (Click to expand) ===== */}
         <div className="md:hidden space-y-4 mb-16">
-          {TEAM.map((member, idx) => {
+          {team.map((member, idx) => {
             const isExpanded = mobileExpandedIdx === idx;
 
             return (

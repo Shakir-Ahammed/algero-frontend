@@ -1,10 +1,37 @@
-import { useRef, useCallback } from "react";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { useRef, useCallback, useMemo } from "react";
+import { CheckCircle2, ArrowRight, Code2, Smartphone, Paintbrush, Server, Shield, Layers } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useApiData } from "../../hooks/useApiData";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { SERVICES } from "../../features/services/service.data";
 import { Button } from "../../components/ui/Button";
+import type { Service } from "../../types";
+
+// Map API icon strings to Lucide components
+const ICON_MAP: Record<string, typeof Code2> = {
+  Code2, Smartphone, Paintbrush, Server, Shield, Layers,
+  code2: Code2, smartphone: Smartphone, paintbrush: Paintbrush,
+  server: Server, shield: Shield, layers: Layers,
+};
+
+interface ApiService {
+  id: number;
+  title: string;
+  description: string;
+  icon: string | null;
+  features: string[] | null;
+  is_active: boolean;
+}
+
+function mapApiService(s: ApiService): Service {
+  return {
+    title: s.title,
+    desc: s.description,
+    icon: (s.icon && ICON_MAP[s.icon]) || Code2,
+    features: s.features ?? [],
+  };
+}
 
 const ServiceCard = ({
   service,
@@ -100,6 +127,13 @@ export const ServicesPage = () => {
   const navigate = useNavigate();
   useScrollReveal();
 
+  const { data: apiServices } = useApiData<ApiService[]>("/services", []);
+
+  const services: Service[] = useMemo(
+    () => (apiServices.length > 0 ? apiServices.filter(s => s.is_active).map(mapApiService) : SERVICES),
+    [apiServices]
+  );
+
   return (
     <div className="pb-0 min-h-screen relative noise-overlay">
       {/* Background layers */}
@@ -116,7 +150,7 @@ export const ServicesPage = () => {
       {/* Cards Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SERVICES.map((service, idx) => (
+          {services.map((service, idx) => (
             <ServiceCard key={idx} service={service} idx={idx} />
           ))}
         </div>

@@ -57,7 +57,7 @@ class AdminController extends Controller
             'teamCount'       => TeamMember::count(),
             'serviceCount'    => Service::count(),
             'subscriberCount' => Subscriber::where('is_active', true)->count(),
-            'leadCount'       => ContactLead::new()->count(),
+            'leadCount'       => ContactLead::statusNew()->count(),
             'recentBlogs'     => Blog::orderByDesc('created_at')->take(5)->get(),
             'recentSubs'      => Subscriber::orderByDesc('subscribed_at')->take(5)->get(),
             'recentLeads'     => ContactLead::orderByDesc('created_at')->take(5)->get(),

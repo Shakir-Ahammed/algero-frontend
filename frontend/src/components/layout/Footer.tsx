@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Globe, Mail, MapPin, Phone, Check } from "lucide-react";
 import { ExactLogo } from "../ui/ExactLogo";
+import { apiPost } from "../../lib/api";
 
 const LINKS = {
   company: [
@@ -17,7 +19,23 @@ const LINKS = {
   ],
 };
 
-export const Footer = () => (
+export const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [subStatus, setSubStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+
+  const handleSubscribe = async () => {
+    if (!email) return;
+    setSubStatus("sending");
+    try {
+      await apiPost("/subscribe", { email });
+      setSubStatus("done");
+      setEmail("");
+    } catch {
+      setSubStatus("error");
+    }
+  };
+
+  return (
   <footer className="relative bg-[#020408] border-t border-white/[0.04]">
     {/* Newsletter Banner */}
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
@@ -31,14 +49,29 @@ export const Footer = () => (
           </p>
         </div>
         <div className="flex w-full md:w-auto">
-          <input
-            type="email"
-            placeholder="you@company.com"
-            className="bg-white/[0.06] border border-white/[0.1] rounded-l-xl px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 w-full md:w-64 transition-colors"
-          />
-          <button className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-r-xl font-semibold text-sm transition-colors flex items-center gap-2 btn-press whitespace-nowrap">
-            Subscribe <ArrowRight className="w-4 h-4" />
-          </button>
+          {subStatus === "done" ? (
+            <div className="flex items-center gap-2 text-green-400 font-medium text-sm px-5 py-3">
+              <Check className="w-5 h-5" /> Subscribed! Thank you.
+            </div>
+          ) : (
+            <>
+              <input
+                type="email"
+                placeholder="you@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                className="bg-white/[0.06] border border-white/[0.1] rounded-l-xl px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 w-full md:w-64 transition-colors"
+              />
+              <button
+                onClick={handleSubscribe}
+                disabled={subStatus === "sending"}
+                className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-r-xl font-semibold text-sm transition-colors flex items-center gap-2 btn-press whitespace-nowrap disabled:opacity-50"
+              >
+                {subStatus === "sending" ? "..." : "Subscribe"} <ArrowRight className="w-4 h-4" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -128,4 +161,5 @@ export const Footer = () => (
       </div>
     </div>
   </footer>
-);
+  );
+};

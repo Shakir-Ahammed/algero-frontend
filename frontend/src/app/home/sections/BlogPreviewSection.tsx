@@ -1,10 +1,35 @@
 import { ArrowRight, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
+import { useApiData } from "../../../hooks/useApiData";
 import { BLOG_POSTS } from "../../../features/blog/blog.data";
+import type { BlogPost } from "../../../types";
+
+interface ApiBlog {
+  id: number;
+  title: string;
+  category: string;
+  image: string | null;
+  read_time: string | null;
+  published_at: string | null;
+}
+
+function mapApiBlog(b: ApiBlog): BlogPost {
+  return {
+    title: b.title,
+    category: b.category,
+    date: b.published_at
+      ? new Date(b.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "",
+    image: b.image || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80",
+    read: b.read_time || "5 min read",
+  };
+}
 
 export const BlogPreviewSection = () => {
   const navigate = useNavigate();
+  const { data: apiBlogs } = useApiData<ApiBlog[]>("/blogs", []);
+  const blogs: BlogPost[] = apiBlogs.length > 0 ? apiBlogs.map(mapApiBlog) : BLOG_POSTS;
 
   return (
     <section className="py-28 border-t border-white/[0.04] bg-[#050b16] relative z-10 section-glow-top">
@@ -32,7 +57,7 @@ export const BlogPreviewSection = () => {
           </div>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
-          {BLOG_POSTS.slice(0, 2).map((post, idx) => (
+          {blogs.slice(0, 2).map((post, idx) => (
             <div
               key={idx}
               className="glass-card rounded-3xl overflow-hidden group cursor-pointer flex flex-col sm:flex-row reveal card-premium"

@@ -25,7 +25,7 @@ class ContactLead extends Model
     /**
      * Scope: only new leads.
      */
-    public function scopeNew($query)
+    public function scopeStatusNew($query)
     {
         return $query->where('status', 'new');
     }
