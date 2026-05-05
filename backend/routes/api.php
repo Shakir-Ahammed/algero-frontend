@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ContactLeadController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\TeamMemberController;
@@ -27,6 +28,9 @@ Route::get('/services/{slug}', [ServiceController::class, 'show']);
 
 // Subscribe (public)
 Route::post('/subscribe', [SubscriberController::class, 'subscribe']);
+
+// Contact Form (public)
+Route::post('/contact', [ContactLeadController::class, 'store']);
 
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
@@ -61,4 +65,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Subscribers (admin)
     Route::get('/subscribers', [SubscriberController::class, 'index']);
     Route::delete('/subscribers/{id}', [SubscriberController::class, 'destroy']);
+
+    // Contact Leads (admin)
+    Route::get('/leads', [ContactLeadController::class, 'index']);
+    Route::put('/leads/{id}/status', [ContactLeadController::class, 'updateStatus']);
+    Route::delete('/leads/{id}', [ContactLeadController::class, 'destroy']);
 });

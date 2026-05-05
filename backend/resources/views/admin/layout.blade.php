@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin') — Algero</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f35;
+            --bg-card-hover: #1f2642;
+            --border: #2a3050;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --danger-hover: #f87171;
+            --warning: #f59e0b;
+            --radius: 10px;
+            --radius-sm: 6px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --transition: 0.2s ease;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+        a:hover { color: var(--accent-hover); }
+
+        /* ─── Layout ─── */
+        .admin-wrapper { display: flex; min-height: 100vh; }
+
+        /* ─── Sidebar ─── */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 0;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 24px 24px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-brand h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-brand span {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: block;
+            margin-top: 4px;
+        }
+        .sidebar-nav { padding: 16px 12px; }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+            margin-bottom: 2px;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: var(--accent-glow);
+            color: var(--accent-hover);
+        }
+        .sidebar-nav a.active { border-left: 3px solid var(--accent); }
+        .sidebar-nav .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-section {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 20px 14px 8px;
+            font-weight: 600;
+        }
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid var(--border);
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-secondary);
+        }
+        .sidebar-footer form button {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all var(--transition);
+        }
+        .sidebar-footer form button:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* ─── Main Content ─── */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px 40px;
+            min-height: 100vh;
+        }
+
+        /* ─── Page Header ─── */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .page-header p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+        /* ─── Cards / Stats ─── */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all var(--transition);
+        }
+        .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
+        .stat-card .stat-icon { font-size: 28px; margin-bottom: 12px; }
+        .stat-card .stat-value { font-size: 32px; font-weight: 700; }
+        .stat-card .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+        /* ─── Table ─── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h3 { font-size: 16px; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.15);
+        }
+        td {
+            padding: 14px 24px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(42, 48, 80, 0.5);
+            vertical-align: middle;
+        }
+        tr:hover td { background: rgba(99, 102, 241, 0.03); }
+        td img.thumb { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+
+        /* ─── Buttons ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); color: #fff; box-shadow: 0 0 16px var(--accent-glow); }
+        .btn-sm { padding: 5px 12px; font-size: 12px; }
+        .btn-edit { background: rgba(99, 102, 241, 0.12); color: var(--accent-hover); }
+        .btn-edit:hover { background: rgba(99, 102, 241, 0.25); color: var(--accent-hover); }
+        .btn-danger { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.25); color: var(--danger-hover); }
+        .btn-group { display: flex; gap: 6px; }
+
+        /* ─── Forms ─── */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color var(--transition);
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        select.form-control { cursor: pointer; }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; }
+        .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+        /* ─── Alerts ─── */
+        .alert {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .alert-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25); color: var(--success); }
+        .alert-danger { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--danger); }
+
+        /* ─── Badge ─── */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-active { background: rgba(34, 197, 94, 0.12); color: var(--success); }
+        .badge-draft { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+        .badge-inactive { background: rgba(100, 116, 139, 0.12); color: var(--text-muted); }
+
+        /* ─── Pagination ─── */
+        .pagination { display: flex; gap: 4px; justify-content: center; padding: 20px; }
+        .pagination a, .pagination span {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .pagination span.current { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .pagination a:hover { border-color: var(--accent); color: var(--accent-hover); }
+
+        /* ─── Empty State ─── */
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state p { font-size: 15px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h1>Algero</h1>
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">Main</div>
+                <a href="/admin" class="{{ request()->is('admin') && !request()->is('admin/*') ? 'active' : '' }}">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+
+                <div class="sidebar-section">Content</div>
+                <a href="/admin/blogs" class="{{ request()->is('admin/blogs*') ? 'active' : '' }}">
+                    <span class="nav-icon">📝</span> Blogs
+                </a>
+                <a href="/admin/team" class="{{ request()->is('admin/team*') ? 'active' : '' }}">
+                    <span class="nav-icon">👥</span> Team Members
+                </a>
+                <a href="/admin/services" class="{{ request()->is('admin/services*') ? 'active' : '' }}">
+                    <span class="nav-icon">⚙️</span> Services
+                </a>
+
+                <div class="sidebar-section">Marketing</div>
+                <a href="/admin/leads" class="{{ request()->is('admin/leads*') ? 'active' : '' }}">
+                    <span class="nav-icon">📋</span> Contact Leads
+                </a>
+                <a href="/admin/subscribers" class="{{ request()->is('admin/subscribers*') ? 'active' : '' }}">
+                    <span class="nav-icon">📧</span> Subscribers
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <form method="POST" action="/admin/logout">
+                    @csrf
+                    <button type="submit">🚪 Sign Out</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            @if(session('success'))
+                <div class="alert alert-success">✅ {{ session('success') }}</div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    @foreach($errors->all() as $error)
+                        {{ $error }}<br>
+                    @endforeach
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
+    </div>
+</body>
+</html>
