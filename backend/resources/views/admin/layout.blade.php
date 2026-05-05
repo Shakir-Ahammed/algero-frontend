@@ -6,38 +6,44 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin') — Algero</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #111827;
-            --bg-card: #1a1f35;
-            --bg-card-hover: #1f2642;
-            --border: #2a3050;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --accent-glow: rgba(99, 102, 241, 0.15);
+            --bg-primary: #030712;
+            --bg-secondary: rgba(17, 24, 39, 0.7);
+            --bg-card: rgba(17, 24, 39, 0.5);
+            --bg-card-hover: rgba(31, 41, 55, 0.5);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --accent-glow: rgba(59, 130, 246, 0.15);
             --success: #22c55e;
             --danger: #ef4444;
             --danger-hover: #f87171;
             --warning: #f59e0b;
-            --radius: 10px;
-            --radius-sm: 6px;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-            --transition: 0.2s ease;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            --transition: 0.3s ease;
         }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
         }
 
         a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
@@ -50,6 +56,8 @@
         .sidebar {
             width: 260px;
             background: var(--bg-secondary);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-right: 1px solid var(--border);
             padding: 0;
             position: fixed;
@@ -64,7 +72,7 @@
         .sidebar-brand h1 {
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            background: linear-gradient(135deg, #60a5fa, #22d3ee, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
@@ -109,7 +117,7 @@
             border-top: 1px solid var(--border);
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            background: var(--bg-secondary);
+            background: transparent;
         }
         .sidebar-footer form button {
             width: 100%;
@@ -155,10 +163,13 @@
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; }
         .stat-card {
             background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 24px;
             transition: all var(--transition);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
         .stat-card .stat-icon { font-size: 28px; margin-bottom: 12px; }
@@ -168,9 +179,12 @@
         /* ─── Table ─── */
         .card {
             background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         .card-header {
             padding: 18px 24px;
@@ -195,7 +209,7 @@
         td {
             padding: 14px 24px;
             font-size: 14px;
-            border-bottom: 1px solid rgba(42, 48, 80, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             vertical-align: middle;
         }
         tr:hover td { background: rgba(99, 102, 241, 0.03); }
@@ -241,7 +255,7 @@
         .form-control {
             width: 100%;
             padding: 10px 14px;
-            background: var(--bg-primary);
+            background: rgba(3, 7, 18, 0.5);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             color: var(--text-primary);

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — Algero Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: #0a0e1a;
+            background: #030712;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -19,26 +19,37 @@
             overflow: hidden;
         }
 
-        /* Animated background orbs */
-        body::before, body::after {
+        /* Animated background grid */
+        body::before {
             content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Animated background orbs */
+        .orb {
             position: fixed;
             border-radius: 50%;
             filter: blur(120px);
-            opacity: 0.3;
+            opacity: 0.2;
             z-index: 0;
-        }
-        body::before {
-            width: 500px; height: 500px;
-            background: #6366f1;
-            top: -150px; right: -100px;
             animation: float 8s ease-in-out infinite;
         }
-        body::after {
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: #3b82f6;
+            top: -150px; right: -100px;
+        }
+        .orb-2 {
             width: 400px; height: 400px;
-            background: #a78bfa;
+            background: #06b6d4;
             bottom: -100px; left: -100px;
-            animation: float 10s ease-in-out infinite reverse;
+            animation-direction: reverse;
+            animation-duration: 10s;
         }
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -54,12 +65,13 @@
         }
 
         .login-card {
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(99, 102, 241, 0.15);
+            background: rgba(17, 24, 39, 0.5);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 16px;
             padding: 48px 40px;
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .login-brand {
@@ -68,25 +80,26 @@
         }
         .login-brand .logo {
             width: 56px; height: 56px;
-            background: linear-gradient(135deg, #6366f1, #a78bfa);
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 26px;
             margin-bottom: 16px;
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.25);
+            color: #60a5fa;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
         }
         .login-brand h1 {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #f9fafb;
             letter-spacing: -0.5px;
         }
         .login-brand p {
-            color: #64748b;
+            color: #9ca3af;
             font-size: 14px;
             margin-top: 6px;
         }
@@ -96,7 +109,7 @@
             display: block;
             font-size: 12px;
             font-weight: 600;
-            color: #94a3b8;
+            color: #9ca3af;
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -104,20 +117,20 @@
         .form-control {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(10, 14, 26, 0.8);
-            border: 1px solid #2a3050;
+            background: rgba(3, 7, 18, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px;
-            color: #e2e8f0;
+            color: #f9fafb;
             font-size: 15px;
             font-family: inherit;
             transition: all 0.2s ease;
         }
         .form-control:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
         }
-        .form-control::placeholder { color: #475569; }
+        .form-control::placeholder { color: #6b7280; }
 
         .remember-row {
             display: flex;
@@ -125,13 +138,13 @@
             gap: 8px;
             margin-bottom: 28px;
         }
-        .remember-row input { width: 16px; height: 16px; accent-color: #6366f1; cursor: pointer; }
-        .remember-row label { font-size: 13px; color: #94a3b8; cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; }
+        .remember-row input { width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer; }
+        .remember-row label { font-size: 13px; color: #9ca3af; cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; }
 
         .btn-login {
             width: 100%;
             padding: 13px;
-            background: linear-gradient(135deg, #6366f1, #818cf8);
+            background: #3b82f6;
             border: none;
             border-radius: 10px;
             color: #fff;
@@ -143,7 +156,8 @@
             letter-spacing: 0.3px;
         }
         .btn-login:hover {
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
+            background: #60a5fa;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.25);
             transform: translateY(-1px);
         }
         .btn-login:active { transform: translateY(0); }
@@ -160,6 +174,8 @@
     </style>
 </head>
 <body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
     <div class="login-container">
         <div class="login-card">
             <div class="login-brand">
