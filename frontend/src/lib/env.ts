@@ -33,4 +33,5 @@ function getEnv(key: string, fallback: string): string {
 
 export const env = {
   API_URL: getEnv("VITE_API_URL", "http://localhost:8000"),
+  RECAPTCHA_SITE_KEY: getEnv("VITE_RECAPTCHA_SITE_KEY", ""),
 };

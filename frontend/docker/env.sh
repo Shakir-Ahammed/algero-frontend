@@ -12,6 +12,7 @@ CONFIG_FILE=/usr/share/nginx/html/env-config.js
 cat <<EOF > "$CONFIG_FILE"
 window.__ENV__ = {
   VITE_API_URL: "${VITE_API_URL:-http://localhost:8000}",
+  VITE_RECAPTCHA_SITE_KEY: "${VITE_RECAPTCHA_SITE_KEY:-}",
 };
 EOF
 

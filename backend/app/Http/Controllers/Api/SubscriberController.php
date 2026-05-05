@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SubscriberResource;
+use App\Http\Services\RecaptchaService;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,16 @@ class SubscriberController extends Controller
     public function subscribe(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email|max:255',
+            'email'           => 'required|email|max:255',
+            'recaptcha_token' => 'nullable|string',
         ]);
+
+        // Verify reCAPTCHA
+        if (!RecaptchaService::verify($request->recaptcha_token)) {
+            return response()->json([
+                'message' => 'reCAPTCHA verification failed. Please try again.',
+            ], 422);
+        }
 
         // Check if already subscribed
         $existing = Subscriber::where('email', $validated['email'])->first();
