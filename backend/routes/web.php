@@ -42,6 +42,14 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::put('/services/{id}', [AdminController::class, 'updateService']);
     Route::delete('/services/{id}', [AdminController::class, 'deleteService']);
 
+    // Projects
+    Route::get('/projects', [AdminController::class, 'projects'])->name('admin.projects');
+    Route::get('/projects/create', [AdminController::class, 'createProject'])->name('admin.projects.create');
+    Route::post('/projects', [AdminController::class, 'storeProject']);
+    Route::get('/projects/{id}/edit', [AdminController::class, 'editProject'])->name('admin.projects.edit');
+    Route::put('/projects/{id}', [AdminController::class, 'updateProject']);
+    Route::delete('/projects/{id}', [AdminController::class, 'deleteProject']);
+
     // Subscribers
     Route::get('/subscribers', [AdminController::class, 'subscribers'])->name('admin.subscribers');
     Route::delete('/subscribers/{id}', [AdminController::class, 'deleteSubscriber']);
@@ -51,4 +59,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/leads/{id}', [AdminController::class, 'viewLead'])->name('admin.leads.view');
     Route::put('/leads/{id}/status', [AdminController::class, 'updateLeadStatus']);
     Route::delete('/leads/{id}', [AdminController::class, 'deleteLead']);
+
+    // Image Upload
+    Route::post('/upload', [AdminController::class, 'uploadImage'])->name('admin.upload');
 });

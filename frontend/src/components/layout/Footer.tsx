@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Globe, Mail, MapPin, Phone, Check } from "lucide-react";
 import { ExactLogo } from "../ui/ExactLogo";
 import { apiPost } from "../../lib/api";
+import { useRecaptcha } from "../../hooks/useRecaptcha";
 
 const LINKS = {
   company: [
@@ -22,12 +23,19 @@ const LINKS = {
 export const Footer = () => {
   const [email, setEmail] = useState("");
   const [subStatus, setSubStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const { executeRecaptcha } = useRecaptcha();
 
   const handleSubscribe = async () => {
     if (!email) return;
     setSubStatus("sending");
     try {
-      await apiPost("/subscribe", { email });
+      // Get reCAPTCHA v3 token (invisible, no user interaction)
+      const recaptchaToken = await executeRecaptcha("subscribe");
+
+      await apiPost("/subscribe", {
+        email,
+        ...(recaptchaToken ? { recaptcha_token: recaptchaToken } : {}),
+      });
       setSubStatus("done");
       setEmail("");
     } catch {

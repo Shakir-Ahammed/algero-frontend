@@ -45,9 +45,6 @@ COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 # Copy Supervisor config
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Create storage link directory
-RUN mkdir -p /var/www/html/public/storage
-
 # Install netcat for healthcheck
 RUN apk add --no-cache netcat-openbsd
 

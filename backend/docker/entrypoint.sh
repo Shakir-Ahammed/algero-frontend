@@ -14,7 +14,9 @@ echo "==> Seeding database..."
 php artisan db:seed --force
 
 echo "==> Creating storage link..."
-php artisan storage:link 2>/dev/null || true
+rm -rf /var/www/html/public/storage
+ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+chown -R www-data:www-data /var/www/html/storage/app/public
 
 echo "==> Clearing caches..."
 php artisan config:cache

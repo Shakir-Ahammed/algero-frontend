@@ -312,6 +312,95 @@
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
         .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
         .empty-state p { font-size: 15px; margin-bottom: 20px; }
+
+        /* ─── Image Upload Widget ─── */
+        .upload-widget { position: relative; }
+        .upload-drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            background: rgba(3, 7, 18, 0.3);
+        }
+        .upload-drop-zone:hover,
+        .upload-drop-zone.dragover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+        .upload-drop-zone .upload-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+        .upload-drop-zone p { color: var(--text-secondary); font-size: 13px; margin: 0; }
+        .upload-drop-zone .upload-hint { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+        .upload-drop-zone input[type="file"] { display: none; }
+
+        .upload-preview {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: rgba(3, 7, 18, 0.3);
+        }
+        .upload-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
+        }
+        .upload-preview-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+        }
+        .upload-preview-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+        }
+        .btn-remove-img {
+            background: rgba(239, 68, 68, 0.85);
+            color: #fff;
+            backdrop-filter: blur(8px);
+        }
+        .btn-remove-img:hover { background: var(--danger); }
+        .btn-change-img {
+            background: rgba(59, 130, 246, 0.85);
+            color: #fff;
+            backdrop-filter: blur(8px);
+        }
+        .btn-change-img:hover { background: var(--accent); }
+
+        .upload-progress {
+            margin-top: 8px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            display: none;
+        }
+        .upload-progress.active { display: block; }
+        .upload-progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
     </style>
 </head>
 <body>
@@ -337,6 +426,9 @@
                 </a>
                 <a href="/admin/services" class="{{ request()->is('admin/services*') ? 'active' : '' }}">
                     <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span> Services
+                </a>
+                <a href="/admin/projects" class="{{ request()->is('admin/projects*') ? 'active' : '' }}">
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span> Projects
                 </a>
 
                 <div class="sidebar-section">Marketing</div>

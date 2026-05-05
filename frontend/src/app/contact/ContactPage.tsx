@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useRecaptcha } from "../../hooks/useRecaptcha";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { apiPost } from "../../lib/api";
@@ -16,6 +17,7 @@ export const ContactPage = () => {
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const { executeRecaptcha, siteKey } = useRecaptcha();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,7 +29,13 @@ export const ContactPage = () => {
     setErrorMsg("");
 
     try {
-      await apiPost("/contact", form as unknown as Record<string, unknown>);
+      // Get reCAPTCHA v3 token (invisible, no user interaction)
+      const recaptchaToken = await executeRecaptcha("contact");
+
+      await apiPost("/contact", {
+        ...form,
+        ...(recaptchaToken ? { recaptcha_token: recaptchaToken } : {}),
+      } as Record<string, unknown>);
       setStatus("sent");
       setForm({ first_name: "", last_name: "", email: "", message: "" });
     } catch (err) {
