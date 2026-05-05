@@ -103,7 +103,8 @@
             color: var(--accent-hover);
         }
         .sidebar-nav a.active { border-left: 3px solid var(--accent); }
-        .sidebar-nav .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-nav .nav-icon { width: 20px; display: flex; justify-content: center; align-items: center; }
+        .sidebar-nav .nav-icon svg { width: 18px; height: 18px; color: inherit; }
         .sidebar-section {
             font-size: 10px;
             text-transform: uppercase;
@@ -172,7 +173,8 @@
             box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
-        .stat-card .stat-icon { font-size: 28px; margin-bottom: 12px; }
+        .stat-card .stat-icon { margin-bottom: 12px; color: var(--accent); }
+        .stat-card .stat-icon svg { width: 28px; height: 28px; }
         .stat-card .stat-value { font-size: 32px; font-weight: 700; }
         .stat-card .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
@@ -323,32 +325,34 @@
             <nav class="sidebar-nav">
                 <div class="sidebar-section">Main</div>
                 <a href="/admin" class="{{ request()->is('admin') && !request()->is('admin/*') ? 'active' : '' }}">
-                    <span class="nav-icon">📊</span> Dashboard
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></span> Dashboard
                 </a>
 
                 <div class="sidebar-section">Content</div>
                 <a href="/admin/blogs" class="{{ request()->is('admin/blogs*') ? 'active' : '' }}">
-                    <span class="nav-icon">📝</span> Blogs
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg></span> Blogs
                 </a>
                 <a href="/admin/team" class="{{ request()->is('admin/team*') ? 'active' : '' }}">
-                    <span class="nav-icon">👥</span> Team Members
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Team Members
                 </a>
                 <a href="/admin/services" class="{{ request()->is('admin/services*') ? 'active' : '' }}">
-                    <span class="nav-icon">⚙️</span> Services
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span> Services
                 </a>
 
                 <div class="sidebar-section">Marketing</div>
                 <a href="/admin/leads" class="{{ request()->is('admin/leads*') ? 'active' : '' }}">
-                    <span class="nav-icon">📋</span> Contact Leads
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span> Contact Leads
                 </a>
                 <a href="/admin/subscribers" class="{{ request()->is('admin/subscribers*') ? 'active' : '' }}">
-                    <span class="nav-icon">📧</span> Subscribers
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span> Subscribers
                 </a>
             </nav>
             <div class="sidebar-footer">
                 <form method="POST" action="/admin/logout">
                     @csrf
-                    <button type="submit">🚪 Sign Out</button>
+                    <button type="submit" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> Sign Out
+                    </button>
                 </form>
             </div>
         </aside>
