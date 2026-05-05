@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { PROJECTS } from "../../features/projects/project.data";
+import { apiFetch } from "../../lib/api";
+import type { Project } from "../../types";
 
 export const ProjectsPage = () => {
   const [filter, setFilter] = useState("All");
+  const [projects, setProjects] = useState<Project[]>(PROJECTS);
   const categories = ["All", "Web App", "Mobile App", "UI/UX", "DevOps"];
   useScrollReveal();
 
+  useEffect(() => {
+    apiFetch<Project[]>("/projects")
+      .then((data) => {
+        if (data && data.length > 0) setProjects(data);
+      })
+      .catch(() => {
+        // Fallback to static data silently
+      });
+  }, []);
+
   const filteredProjects =
     filter === "All"
-      ? PROJECTS
-      : PROJECTS.filter((project) => project.category === filter);
+      ? projects
+      : projects.filter((project) => project.category === filter);
 
   return (
     <div className="pb-24 min-h-screen">

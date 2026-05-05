@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ContactLeadController;
+use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\TeamMemberController;
@@ -25,6 +26,10 @@ Route::get('/team-members/{id}', [TeamMemberController::class, 'show']);
 // Services
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{slug}', [ServiceController::class, 'show']);
+
+// Projects
+Route::get('/projects', [ProjectController::class, 'index']);
+Route::get('/projects/{slug}', [ProjectController::class, 'show']);
 
 // Subscribe (public)
 Route::post('/subscribe', [SubscriberController::class, 'subscribe']);

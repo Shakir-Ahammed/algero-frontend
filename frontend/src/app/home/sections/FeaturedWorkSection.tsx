@@ -1,12 +1,25 @@
+import { useState, useEffect } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
 import { PROJECTS } from "../../../features/projects/project.data";
+import { apiFetch } from "../../../lib/api";
+import type { Project } from "../../../types";
 
 export const FeaturedWorkSection = () => {
   const navigate = useNavigate();
-  const heroProject = PROJECTS[0];
-  const otherProjects = PROJECTS.slice(1, 4);
+  const [projects, setProjects] = useState<Project[]>(PROJECTS);
+
+  useEffect(() => {
+    apiFetch<Project[]>("/projects")
+      .then((data) => {
+        if (data && data.length > 0) setProjects(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const heroProject = projects[0];
+  const otherProjects = projects.slice(1, 4);
 
   return (
     <section className="py-32 bg-gray-50 text-gray-900 rounded-[3rem] mx-2 sm:mx-6 lg:mx-8 my-12 relative overflow-hidden">

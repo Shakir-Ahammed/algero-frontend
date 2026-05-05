@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\ContactLead;
+use App\Models\Project;
 use App\Models\Service;
 use App\Models\Subscriber;
 use App\Models\TeamMember;
@@ -56,6 +57,7 @@ class AdminController extends Controller
             'blogCount'       => Blog::count(),
             'teamCount'       => TeamMember::count(),
             'serviceCount'    => Service::count(),
+            'projectCount'    => Project::count(),
             'subscriberCount' => Subscriber::where('is_active', true)->count(),
             'leadCount'       => ContactLead::statusNew()->count(),
             'recentBlogs'     => Blog::orderByDesc('created_at')->take(5)->get(),
@@ -269,6 +271,87 @@ class AdminController extends Controller
         return redirect('/admin/services')->with('success', 'Service deleted.');
     }
 
+    // ─── Projects ─────────────────────────────────────────
+
+    public function projects()
+    {
+        return view('admin.projects.index', [
+            'projects' => Project::orderBy('sort_order')->orderByDesc('created_at')->get(),
+        ]);
+    }
+
+    public function createProject()
+    {
+        return view('admin.projects.form', ['project' => null]);
+    }
+
+    public function storeProject(Request $request)
+    {
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'category'    => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|string|max:500',
+            'tech'        => 'nullable|string',
+            'client'      => 'nullable|string|max:200',
+            'url'         => 'nullable|string|max:500',
+            'is_featured' => 'nullable',
+            'is_active'   => 'nullable',
+            'sort_order'  => 'nullable|integer',
+        ]);
+
+        $data['tech'] = $this->parseTech($data['tech'] ?? '');
+        $data['is_featured'] = $request->has('is_featured');
+        $data['is_active'] = $request->has('is_active');
+
+        Project::create($data);
+
+        return redirect('/admin/projects')->with('success', 'Project created.');
+    }
+
+    public function editProject(int $id)
+    {
+        return view('admin.projects.form', [
+            'project' => Project::findOrFail($id),
+        ]);
+    }
+
+    public function updateProject(Request $request, int $id)
+    {
+        $project = Project::findOrFail($id);
+
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'category'    => 'required|string|max:100',
+            'description' => 'nullable|string',
+            'image'       => 'nullable|string|max:500',
+            'tech'        => 'nullable|string',
+            'client'      => 'nullable|string|max:200',
+            'url'         => 'nullable|string|max:500',
+            'is_featured' => 'nullable',
+            'is_active'   => 'nullable',
+            'sort_order'  => 'nullable|integer',
+        ]);
+
+        if ($data['title'] !== $project->title) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+
+        $data['tech'] = $this->parseTech($data['tech'] ?? '');
+        $data['is_featured'] = $request->has('is_featured');
+        $data['is_active'] = $request->has('is_active');
+
+        $project->update($data);
+
+        return redirect('/admin/projects')->with('success', 'Project updated.');
+    }
+
+    public function deleteProject(int $id)
+    {
+        Project::findOrFail($id)->delete();
+        return redirect('/admin/projects')->with('success', 'Project deleted.');
+    }
+
     // ─── Subscribers ──────────────────────────────────────
 
     public function subscribers()
@@ -337,5 +420,11 @@ class AdminController extends Controller
     {
         if (empty($raw)) return [];
         return array_values(array_filter(array_map('trim', explode("\n", $raw))));
+    }
+
+    private function parseTech(?string $raw): array
+    {
+        if (empty($raw)) return [];
+        return array_values(array_filter(array_map('trim', explode(",", $raw))));
     }
 }
