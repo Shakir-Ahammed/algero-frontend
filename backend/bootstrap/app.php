@@ -13,6 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
+
+        // Exclude public API POST endpoints from CSRF verification
+        // so the React frontend can POST without a CSRF cookie.
+        $middleware->validateCsrfTokens(except: [
+            'api/subscribe',
+            'api/contact',
+            'api/login',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
