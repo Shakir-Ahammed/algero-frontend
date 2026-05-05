@@ -1,10 +1,53 @@
+import { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { Button } from "../../components/ui/Button";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export const ContactPage = () => {
   useScrollReveal();
+
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ first_name: "", last_name: "", email: "", message: "" });
+      } else {
+        const data = await res.json();
+        setErrorMsg(data.message || "Something went wrong. Please try again.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Unable to connect. Please try again later.");
+      setStatus("error");
+    }
+  };
+
   return (
     <div className="pb-24 min-h-screen">
       <PageHeader
@@ -63,54 +106,93 @@ export const ContactPage = () => {
           </div>
 
           <div className="glass-card p-10 rounded-3xl border-t border-blue-500/30 reveal reveal-delay-2">
-            <form
-              className="space-y-6"
-              onSubmit={(event) => event.preventDefault()}
-            >
-              <div className="grid grid-cols-2 gap-6">
+            {status === "sent" ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-3xl mb-6">
+                  ✓
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Message Sent!</h3>
+                <p className="text-gray-400 text-lg mb-8">
+                  Thank you! We'll get back to you within 24 hours.
+                </p>
+                <button
+                  onClick={() => setStatus("idle")}
+                  className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+                >
+                  Send another message →
+                </button>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                {errorMsg && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
+                    {errorMsg}
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={form.first_name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-600"
+                      placeholder="John"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={form.last_name}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-600"
+                      placeholder="Doe"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    First Name
+                    Email Address
                   </label>
                   <input
-                    type="text"
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
                     className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-600"
-                    placeholder="John"
+                    placeholder="john@company.com"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Last Name
+                    Project Details
                   </label>
-                  <input
-                    type="text"
-                    className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-600"
-                    placeholder="Doe"
-                  />
+                  <textarea
+                    rows={5}
+                    name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none text-white placeholder-gray-600"
+                    placeholder="Tell us about your goals, timeline, and budget..."
+                  ></textarea>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-600"
-                  placeholder="john@company.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Project Details
-                </label>
-                <textarea
-                  rows={5}
-                  className="w-full px-5 py-4 bg-[#030712]/50 border border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none text-white placeholder-gray-600"
-                  placeholder="Tell us about your goals, timeline, and budget..."
-                ></textarea>
-              </div>
-              <Button className="w-full !py-4 text-lg">Send Message</Button>
-            </form>
+                <Button
+                  className="w-full !py-4 text-lg"
+                  disabled={status === "sending"}
+                >
+                  {status === "sending" ? "Sending..." : "Send Message"}
+                </Button>
+              </form>
+            )}
           </div>
         </div>
       </div>
