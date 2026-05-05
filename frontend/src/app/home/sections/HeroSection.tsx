@@ -10,6 +10,9 @@ export const HeroSection = () => {
       {/* Grid pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-15"></div>
 
+      {/* Animated mesh gradient */}
+      <div className="mesh-gradient"></div>
+
       {/* Animated gradient orbs */}
       <div className="floating-orb top-[10%] left-[5%] w-[500px] h-[500px] bg-blue-600/15 animate-glow-pulse"></div>
       <div className="floating-orb bottom-[20%] right-[5%] w-[400px] h-[400px] bg-purple-600/10 animation-delay-2000 animate-glow-pulse"></div>

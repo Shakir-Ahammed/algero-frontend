@@ -60,7 +60,7 @@ export const BlogPreviewSection = () => {
           {blogs.slice(0, 2).map((post, idx) => (
             <div
               key={idx}
-              className="glass-card rounded-3xl overflow-hidden group cursor-pointer flex flex-col sm:flex-row reveal card-premium"
+              className="glass-card rounded-3xl overflow-hidden group cursor-pointer flex flex-col sm:flex-row reveal card-premium card-highlight"
               style={{ transitionDelay: `${idx * 150}ms` }}
             >
               <div className="sm:w-2/5 h-48 sm:h-auto overflow-hidden relative img-hover-zoom">

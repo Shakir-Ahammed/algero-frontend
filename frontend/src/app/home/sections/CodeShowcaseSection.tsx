@@ -4,6 +4,7 @@ export const CodeShowcaseSection = () => (
   <section className="py-32 relative z-10 bg-[#060d1b] border-y border-white/[0.04] section-glow-top overflow-hidden">
     {/* Decorative */}
     <div className="floating-orb -bottom-20 -right-20 w-[400px] h-[400px] bg-blue-600/10 animate-glow-pulse"></div>
+    <div className="mesh-gradient"></div>
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid lg:grid-cols-2 gap-20 items-center">

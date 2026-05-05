@@ -22,7 +22,7 @@ export const TestimonialsSection = () => (
         {TESTIMONIALS.map((testimonial, idx) => (
           <div
             key={testimonial.id}
-            className="glass-card card-premium p-8 rounded-3xl relative reveal group"
+            className="glass-card card-premium card-highlight p-8 rounded-3xl relative reveal group"
             style={{ transitionDelay: `${idx * 150}ms` }}
           >
             {/* Quote icon */}

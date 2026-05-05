@@ -28,6 +28,7 @@ export const Button = ({
   return (
     <button
       className={`${baseStyle} ${variants[variant]} ${className}`}
+      data-magnetic=""
       {...rest}
     >
       <span className="relative z-10 flex items-center gap-2.5">
