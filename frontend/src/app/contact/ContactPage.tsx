@@ -17,7 +17,7 @@ export const ContactPage = () => {
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const { containerRef: recaptchaRef, token: recaptchaToken, resetRecaptcha, siteKey } = useRecaptcha();
+  const { executeRecaptcha, siteKey } = useRecaptcha();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,20 +28,16 @@ export const ContactPage = () => {
     setStatus("sending");
     setErrorMsg("");
 
-    if (siteKey && !recaptchaToken) {
-      setErrorMsg("Please complete the reCAPTCHA verification.");
-      setStatus("error");
-      return;
-    }
-
     try {
+      // Get reCAPTCHA v3 token (invisible, no user interaction)
+      const recaptchaToken = await executeRecaptcha("contact");
+
       await apiPost("/contact", {
         ...form,
         ...(recaptchaToken ? { recaptcha_token: recaptchaToken } : {}),
       } as Record<string, unknown>);
       setStatus("sent");
       setForm({ first_name: "", last_name: "", email: "", message: "" });
-      resetRecaptcha();
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Unable to connect. Please try again later.");
       setStatus("error");
@@ -186,14 +182,9 @@ export const ContactPage = () => {
                     placeholder="Tell us about your goals, timeline, and budget..."
                   ></textarea>
                 </div>
-                {siteKey && (
-                  <div className="flex justify-center">
-                    <div ref={recaptchaRef}></div>
-                  </div>
-                )}
                 <Button
                   className="w-full !py-4 text-lg"
-                  disabled={status === "sending" || (!!siteKey && !recaptchaToken)}
+                  disabled={status === "sending"}
                 >
                   {status === "sending" ? "Sending..." : "Send Message"}
                 </Button>

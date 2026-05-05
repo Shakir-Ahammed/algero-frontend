@@ -1,22 +1,20 @@
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { env } from "../lib/env";
 
 /**
- * Google reCAPTCHA v2 checkbox hook.
+ * Google reCAPTCHA v3 hook.
  *
- * Loads the reCAPTCHA script once globally, renders a widget in the given
- * container ref, and exposes the current token + reset helper.
- *
- * Supports multiple concurrent widget instances (e.g. Contact form +
- * Footer subscription form on the same page).
+ * reCAPTCHA v3 is invisible — no checkbox widget is shown.
+ * It scores user behaviour in the background and returns a token
+ * when `executeRecaptcha(action)` is called.
  */
 
-// Module-level state so the script is loaded exactly once
+// Module-level state: load the script exactly once
 let scriptLoaded = false;
 let scriptLoading = false;
 const pendingCallbacks: (() => void)[] = [];
 
-function loadRecaptchaScript(): Promise<void> {
+function loadRecaptchaScript(siteKey: string): Promise<void> {
   if (scriptLoaded) return Promise.resolve();
 
   return new Promise((resolve) => {
@@ -28,76 +26,60 @@ function loadRecaptchaScript(): Promise<void> {
     scriptLoading = true;
     pendingCallbacks.push(resolve);
 
-    // Global callback invoked by the reCAPTCHA script
-    (window as Record<string, unknown>).__recaptchaOnLoad = () => {
-      scriptLoaded = true;
-      scriptLoading = false;
-      pendingCallbacks.forEach((cb) => cb());
-      pendingCallbacks.length = 0;
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+    script.async = true;
+
+    script.onload = () => {
+      // grecaptcha.ready fires once the library is fully initialised
+      window.grecaptcha?.ready(() => {
+        scriptLoaded = true;
+        scriptLoading = false;
+        pendingCallbacks.forEach((cb) => cb());
+        pendingCallbacks.length = 0;
+      });
     };
 
-    const script = document.createElement("script");
-    script.src =
-      "https://www.google.com/recaptcha/api.js?onload=__recaptchaOnLoad&render=explicit";
-    script.async = true;
-    script.defer = true;
     document.head.appendChild(script);
   });
 }
 
 export function useRecaptcha() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<number | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const siteKey = env.RECAPTCHA_SITE_KEY;
+  const readyRef = useRef(false);
 
+  // Load the v3 script once
   useEffect(() => {
-    if (!siteKey || !containerRef.current) return;
-
-    let cancelled = false;
-
-    const renderWidget = () => {
-      if (
-        cancelled ||
-        widgetIdRef.current !== null ||
-        !containerRef.current ||
-        !window.grecaptcha?.render
-      )
-        return;
-
-      try {
-        widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-          sitekey: siteKey,
-          theme: "dark",
-          callback: (response: string) => {
-            if (!cancelled) setToken(response);
-          },
-          "expired-callback": () => {
-            if (!cancelled) setToken(null);
-          },
-          "error-callback": () => {
-            if (!cancelled) setToken(null);
-          },
-        });
-      } catch {
-        // Widget may already be rendered in this container — ignore
-      }
-    };
-
-    loadRecaptchaScript().then(renderWidget);
-
-    return () => {
-      cancelled = true;
-      widgetIdRef.current = null;
-    };
+    if (!siteKey) return;
+    loadRecaptchaScript(siteKey).then(() => {
+      readyRef.current = true;
+    });
   }, [siteKey]);
 
-  const resetRecaptcha = useCallback(() => {
-    setToken(null);
-    if (widgetIdRef.current !== null && window.grecaptcha?.reset) {
-      window.grecaptcha.reset(widgetIdRef.current);
-    }
-  }, []);
+  /**
+   * Execute reCAPTCHA v3 and return a token.
+   * @param action  A label for this user action (e.g. "contact", "subscribe").
+   */
+  const executeRecaptcha = useCallback(
+    async (action: string): Promise<string | null> => {
+      if (!siteKey) return null;
 
-  return { containerRef, token, resetRecaptcha, siteKey };
+      // Make sure script is loaded
+      if (!readyRef.current) {
+        await loadRecaptchaScript(siteKey);
+        readyRef.current = true;
+      }
+
+      try {
+        const token = await window.grecaptcha!.execute(siteKey, { action });
+        return token;
+      } catch (err) {
+        console.error("reCAPTCHA execute failed:", err);
+        return null;
+      }
+    },
+    [siteKey]
+  );
+
+  return { executeRecaptcha, siteKey };
 }

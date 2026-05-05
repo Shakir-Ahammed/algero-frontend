@@ -23,20 +23,21 @@ const LINKS = {
 export const Footer = () => {
   const [email, setEmail] = useState("");
   const [subStatus, setSubStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const { containerRef: recaptchaRef, token: recaptchaToken, resetRecaptcha, siteKey } = useRecaptcha();
+  const { executeRecaptcha } = useRecaptcha();
 
   const handleSubscribe = async () => {
     if (!email) return;
-    if (siteKey && !recaptchaToken) return;
     setSubStatus("sending");
     try {
+      // Get reCAPTCHA v3 token (invisible, no user interaction)
+      const recaptchaToken = await executeRecaptcha("subscribe");
+
       await apiPost("/subscribe", {
         email,
         ...(recaptchaToken ? { recaptcha_token: recaptchaToken } : {}),
       });
       setSubStatus("done");
       setEmail("");
-      resetRecaptcha();
     } catch {
       setSubStatus("error");
     }
@@ -55,35 +56,28 @@ export const Footer = () => {
             Get insights on tech, design, and product development.
           </p>
         </div>
-        <div className="flex flex-col w-full md:w-auto gap-3">
+        <div className="flex w-full md:w-auto">
           {subStatus === "done" ? (
             <div className="flex items-center gap-2 text-green-400 font-medium text-sm px-5 py-3">
               <Check className="w-5 h-5" /> Subscribed! Thank you.
             </div>
           ) : (
             <>
-              {siteKey && (
-                <div className="flex justify-center md:justify-end">
-                  <div ref={recaptchaRef} style={{ transform: 'scale(0.85)', transformOrigin: 'center' }}></div>
-                </div>
-              )}
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="you@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                  className="bg-white/[0.06] border border-white/[0.1] rounded-l-xl px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 w-full md:w-64 transition-colors"
-                />
-                <button
-                  onClick={handleSubscribe}
-                  disabled={subStatus === "sending" || (!!siteKey && !recaptchaToken)}
-                  className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-r-xl font-semibold text-sm transition-colors flex items-center gap-2 btn-press whitespace-nowrap disabled:opacity-50"
-                >
-                  {subStatus === "sending" ? "..." : "Subscribe"} <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+              <input
+                type="email"
+                placeholder="you@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                className="bg-white/[0.06] border border-white/[0.1] rounded-l-xl px-5 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 w-full md:w-64 transition-colors"
+              />
+              <button
+                onClick={handleSubscribe}
+                disabled={subStatus === "sending"}
+                className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-r-xl font-semibold text-sm transition-colors flex items-center gap-2 btn-press whitespace-nowrap disabled:opacity-50"
+              >
+                {subStatus === "sending" ? "..." : "Subscribe"} <ArrowRight className="w-4 h-4" />
+              </button>
             </>
           )}
         </div>
