@@ -347,9 +347,11 @@
         }
         .upload-preview img {
             width: 100%;
-            max-height: 240px;
-            object-fit: cover;
+            max-height: 300px;
+            object-fit: contain;
             display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
         }
         .upload-preview-actions {
             position: absolute;
