@@ -3,8 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { Button } from "../../components/ui/Button";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+import { apiPost } from "../../lib/api";
 
 export const ContactPage = () => {
   useScrollReveal();
@@ -28,25 +27,15 @@ export const ContactPage = () => {
     setErrorMsg("");
 
     try {
-      const res = await fetch(`${API_URL}/api/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (res.ok) {
-        setStatus("sent");
-        setForm({ first_name: "", last_name: "", email: "", message: "" });
-      } else {
-        const data = await res.json();
-        setErrorMsg(data.message || "Something went wrong. Please try again.");
-        setStatus("error");
-      }
-    } catch {
-      setErrorMsg("Unable to connect. Please try again later.");
+      await apiPost("/contact", form as unknown as Record<string, unknown>);
+      setStatus("sent");
+      setForm({ first_name: "", last_name: "", email: "", message: "" });
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Unable to connect. Please try again later.");
       setStatus("error");
     }
   };
+
 
   return (
     <div className="pb-24 min-h-screen">

@@ -13,6 +13,7 @@ RUN npm ci
 COPY . .
 
 # Build the production bundle
+# VITE_API_URL is set to a placeholder; the real value is injected at runtime
 RUN npm run build
 
 # ---- Stage 2: Serve with Nginx ----
@@ -27,6 +28,11 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Copy custom Nginx config for SPA routing
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Copy runtime environment injection script
+COPY docker/env.sh /docker-entrypoint.d/40-env-config.sh
+RUN chmod +x /docker-entrypoint.d/40-env-config.sh
+
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Use the env injection script as entrypoint, which then starts nginx
+CMD ["/docker-entrypoint.d/40-env-config.sh"]
