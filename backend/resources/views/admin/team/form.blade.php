@@ -35,9 +35,8 @@
             </div>
 
             <div class="form-group full">
-                <label for="image">Image URL</label>
-                <input type="text" id="image" name="image" class="form-control"
-                       value="{{ old('image', $member?->image) }}" placeholder="https://images.unsplash.com/...">
+                <label>Image</label>
+                @include('admin.partials.upload', ['name' => 'image', 'value' => $member?->image])
             </div>
 
             <div class="form-group">

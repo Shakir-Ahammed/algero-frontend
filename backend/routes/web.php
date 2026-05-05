@@ -51,4 +51,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/leads/{id}', [AdminController::class, 'viewLead'])->name('admin.leads.view');
     Route::put('/leads/{id}/status', [AdminController::class, 'updateLeadStatus']);
     Route::delete('/leads/{id}', [AdminController::class, 'deleteLead']);
+
+    // Image Upload
+    Route::post('/upload', [AdminController::class, 'uploadImage'])->name('admin.upload');
 });

@@ -313,6 +313,24 @@ class AdminController extends Controller
         return redirect('/admin/leads')->with('success', 'Lead deleted.');
     }
 
+    // ─── Image Upload ──────────────────────────────────────
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp,svg|max:5120',
+        ]);
+
+        $path = $request->file('image')->store('uploads', 'public');
+
+        $url = asset('storage/' . $path);
+
+        return response()->json([
+            'url'  => $url,
+            'path' => $path,
+        ]);
+    }
+
     // ─── Helpers ──────────────────────────────────────────
 
     private function parseFeatures(?string $raw): array

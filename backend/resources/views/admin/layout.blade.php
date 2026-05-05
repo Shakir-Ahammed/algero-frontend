@@ -312,6 +312,93 @@
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
         .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
         .empty-state p { font-size: 15px; margin-bottom: 20px; }
+
+        /* ─── Image Upload Widget ─── */
+        .upload-widget { position: relative; }
+        .upload-drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            background: rgba(3, 7, 18, 0.3);
+        }
+        .upload-drop-zone:hover,
+        .upload-drop-zone.dragover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+        .upload-drop-zone .upload-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+        .upload-drop-zone p { color: var(--text-secondary); font-size: 13px; margin: 0; }
+        .upload-drop-zone .upload-hint { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+        .upload-drop-zone input[type="file"] { display: none; }
+
+        .upload-preview {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: rgba(3, 7, 18, 0.3);
+        }
+        .upload-preview img {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            display: block;
+        }
+        .upload-preview-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+        }
+        .upload-preview-actions button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+        }
+        .btn-remove-img {
+            background: rgba(239, 68, 68, 0.85);
+            color: #fff;
+            backdrop-filter: blur(8px);
+        }
+        .btn-remove-img:hover { background: var(--danger); }
+        .btn-change-img {
+            background: rgba(59, 130, 246, 0.85);
+            color: #fff;
+            backdrop-filter: blur(8px);
+        }
+        .btn-change-img:hover { background: var(--accent); }
+
+        .upload-progress {
+            margin-top: 8px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            display: none;
+        }
+        .upload-progress.active { display: block; }
+        .upload-progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
     </style>
 </head>
 <body>
