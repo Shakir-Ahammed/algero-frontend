@@ -88,10 +88,13 @@ class AdminController extends Controller
             'excerpt'      => 'nullable|string',
             'content'      => 'nullable|string',
             'image'        => 'nullable|string|max:500',
+            'images'       => 'nullable|string',
             'author'       => 'nullable|string|max:150',
             'read_time'    => 'nullable|string|max:50',
             'published_at' => 'nullable|date',
         ]);
+
+        $data['images'] = $this->parseImages($data['images'] ?? '');
 
         Blog::create($data);
 
@@ -115,10 +118,13 @@ class AdminController extends Controller
             'excerpt'      => 'nullable|string',
             'content'      => 'nullable|string',
             'image'        => 'nullable|string|max:500',
+            'images'       => 'nullable|string',
             'author'       => 'nullable|string|max:150',
             'read_time'    => 'nullable|string|max:50',
             'published_at' => 'nullable|date',
         ]);
+
+        $data['images'] = $this->parseImages($data['images'] ?? '');
 
         if ($data['title'] !== $blog->title) {
             $data['slug'] = Str::slug($data['title']);
@@ -292,6 +298,7 @@ class AdminController extends Controller
             'category'    => 'required|string|max:100',
             'description' => 'nullable|string',
             'image'       => 'nullable|string|max:500',
+            'images'      => 'nullable|string',
             'tech'        => 'nullable|string',
             'client'      => 'nullable|string|max:200',
             'url'         => 'nullable|string|max:500',
@@ -301,6 +308,7 @@ class AdminController extends Controller
         ]);
 
         $data['tech'] = $this->parseTech($data['tech'] ?? '');
+        $data['images'] = $this->parseImages($data['images'] ?? '');
         $data['is_featured'] = $request->has('is_featured');
         $data['is_active'] = $request->has('is_active');
 
@@ -325,6 +333,7 @@ class AdminController extends Controller
             'category'    => 'required|string|max:100',
             'description' => 'nullable|string',
             'image'       => 'nullable|string|max:500',
+            'images'      => 'nullable|string',
             'tech'        => 'nullable|string',
             'client'      => 'nullable|string|max:200',
             'url'         => 'nullable|string|max:500',
@@ -338,6 +347,7 @@ class AdminController extends Controller
         }
 
         $data['tech'] = $this->parseTech($data['tech'] ?? '');
+        $data['images'] = $this->parseImages($data['images'] ?? '');
         $data['is_featured'] = $request->has('is_featured');
         $data['is_active'] = $request->has('is_active');
 
@@ -426,5 +436,11 @@ class AdminController extends Controller
     {
         if (empty($raw)) return [];
         return array_values(array_filter(array_map('trim', explode(",", $raw))));
+    }
+
+    private function parseImages(?string $raw): array
+    {
+        if (empty($raw)) return [];
+        return array_values(array_filter(array_map('trim', explode("\n", $raw))));
     }
 }

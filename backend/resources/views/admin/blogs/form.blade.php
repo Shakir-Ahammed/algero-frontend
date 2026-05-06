@@ -7,7 +7,10 @@
         <h2>{{ $blog ? 'Edit Blog' : 'Create New Blog' }}</h2>
         <p>{{ $blog ? 'Update blog post details' : 'Write a new blog post' }}</p>
     </div>
-    <a href="/admin/blogs" class="btn btn-sm btn-edit">← Back to Blogs</a>
+    <a href="/admin/blogs" class="btn btn-sm btn-edit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back to Blogs
+    </a>
 </div>
 
 <div class="card" style="padding: 32px;">
@@ -46,6 +49,11 @@
             </div>
 
             <div class="form-group full">
+                <label>Gallery Images</label>
+                @include('admin.partials.multi-upload', ['name' => 'images', 'value' => $blog?->images])
+            </div>
+
+            <div class="form-group full">
                 <label for="excerpt">Excerpt</label>
                 <textarea id="excerpt" name="excerpt" class="form-control" rows="3"
                           placeholder="Short summary of the blog post">{{ old('excerpt', $blog?->excerpt) }}</textarea>
@@ -66,7 +74,10 @@
         </div>
 
         <div style="margin-top: 24px; display: flex; gap: 12px;">
-            <button type="submit" class="btn btn-primary">{{ $blog ? 'Update Blog' : 'Create Blog' }}</button>
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                {{ $blog ? 'Update Blog' : 'Create Blog' }}
+            </button>
             <a href="/admin/blogs" class="btn btn-edit">Cancel</a>
         </div>
     </form>

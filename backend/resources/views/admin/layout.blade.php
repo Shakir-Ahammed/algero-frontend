@@ -318,7 +318,7 @@
         .upload-drop-zone {
             border: 2px dashed var(--border);
             border-radius: var(--radius);
-            padding: 32px 20px;
+            padding: 20px 16px;
             text-align: center;
             cursor: pointer;
             transition: all var(--transition);
@@ -330,12 +330,13 @@
             background: var(--accent-glow);
         }
         .upload-drop-zone .upload-icon {
-            font-size: 36px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--text-muted);
+            display: flex;
+            justify-content: center;
         }
         .upload-drop-zone p { color: var(--text-secondary); font-size: 13px; margin: 0; }
-        .upload-drop-zone .upload-hint { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+        .upload-drop-zone .upload-hint { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
         .upload-drop-zone input[type="file"] { display: none; }
 
         .upload-preview {
@@ -352,6 +353,9 @@
             display: block;
             background: rgba(0, 0, 0, 0.3);
             padding: 4px;
+        }
+        .upload-preview--compact img {
+            max-height: 160px;
         }
         .upload-preview-actions {
             position: absolute;
@@ -452,7 +456,10 @@
         <!-- Main -->
         <main class="main-content">
             @if(session('success'))
-                <div class="alert alert-success">✅ {{ session('success') }}</div>
+                <div class="alert alert-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    {{ session('success') }}
+                </div>
             @endif
 
             @if($errors->any())

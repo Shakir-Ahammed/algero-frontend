@@ -22,6 +22,11 @@ class RecaptchaService
             return true;
         }
 
+        // Skip verification in local / testing environments
+        if (in_array(app()->environment(), ['local', 'testing', 'development'])) {
+            return true;
+        }
+
         // If secret is set but no token provided, fail
         if (empty($token)) {
             return false;

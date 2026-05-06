@@ -6,7 +6,10 @@
     <div>
         <h2>{{ $service ? 'Edit Service' : 'Add New Service' }}</h2>
     </div>
-    <a href="/admin/services" class="btn btn-sm btn-edit">← Back</a>
+    <a href="/admin/services" class="btn btn-sm btn-edit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back
+    </a>
 </div>
 
 <div class="card" style="padding: 32px;">
@@ -49,7 +52,10 @@
         </div>
 
         <div style="margin-top: 24px; display: flex; gap: 12px;">
-            <button type="submit" class="btn btn-primary">{{ $service ? 'Update' : 'Create' }}</button>
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                {{ $service ? 'Update' : 'Create' }}
+            </button>
             <a href="/admin/services" class="btn btn-edit">Cancel</a>
         </div>
     </form>
