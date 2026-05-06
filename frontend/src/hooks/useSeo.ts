@@ -69,7 +69,7 @@ export function useSeo({
     if (image) setMeta("name", "twitter:image", image);
 
     return () => {
-      document.title = `${siteName} — Build the Future of Digital Products`;
+      document.title = `${siteName} — Custom Software Development Company in Bangladesh`;
     };
   }, [title, description, image, url, type, author, publishedTime]);
 }

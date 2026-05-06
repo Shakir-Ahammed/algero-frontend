@@ -3,25 +3,25 @@ import type { Testimonial } from "../../types";
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
-    text: "Algero didn't just build an app; they engineered a scalable platform that handled our 10x growth seamlessly. Absolute professionals.",
-    author: "Marcus Thorne",
-    role: "CTO, FinFlow",
+    text: "Algero built our SaaS platform from scratch using Laravel and React. It handled a 10x traffic spike in the first month without any downtime. Their architecture decisions were spot on.",
+    author: "Arif Rahman",
+    role: "Founder, FinTechBD",
     avatar:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
   },
   {
     id: 2,
-    text: "The UI/UX overhaul increased our conversion rates by 45% in the first month. Their design team truly understands user psychology.",
-    author: "Elena Rostova",
-    role: "VP of Product, RetailNova",
+    text: "The UI/UX redesign increased our dashboard engagement by 40%. Their design team understands how real users interact — not just how things should look, but how they should work.",
+    author: "Nadia Sultana",
+    role: "Product Lead, ShopEase",
     avatar:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
   },
   {
     id: 3,
-    text: "Migrating to a microservices architecture was daunting, but Algero's DevOps experts made it flawless with zero downtime.",
-    author: "James Chen",
-    role: "Director of Eng, Logistix",
+    text: "We needed a cross-platform mobile app shipped fast. Algero delivered a Flutter app to both App Store and Play Store in 8 weeks. Clean code, solid architecture, and great communication throughout.",
+    author: "Tanvir Hossain",
+    role: "CTO, DeliveryNow",
     avatar:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
   },

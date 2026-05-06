@@ -27,19 +27,20 @@ export const HeroSection = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
               </span>
-              New: Algero AI Tool beta is now live
+              Bangladesh's Modern Software Agency — Serving Clients Globally
             </div>
 
             {/* Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-[4.25rem] font-extrabold tracking-tight mb-7 reveal reveal-delay-1 leading-[1.08]">
-              Build the Future of{" "}
-              <span className="text-gradient-animate">Digital Products</span>
+              We Build Software{" "}
+              <span className="text-gradient-animate">That Scales</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-lg text-gray-400/90 max-w-lg mb-10 reveal reveal-delay-2 font-light leading-relaxed">
-              Empowering startups and enterprises with elite software
-              development, cutting-edge mobile apps, and visionary UI/UX design.
+              Algero is a software development agency based in Rajshahi, Bangladesh.
+              We design, engineer, and deploy web applications, mobile apps,
+              and cloud infrastructure for startups and enterprises worldwide.
             </p>
 
             {/* CTAs */}
@@ -48,23 +49,23 @@ export const HeroSection = () => {
                 onClick={() => navigate("/contact")}
                 icon={<ArrowRight className="w-5 h-5" />}
               >
-                Get Started
+                Get a Free Estimate
               </Button>
               <Button
                 variant="secondary"
                 onClick={() => navigate("/projects")}
                 icon={<Play className="w-4 h-4 fill-current" />}
               >
-                View Our Work
+                See Our Projects
               </Button>
             </div>
 
             {/* Stats */}
             <div className="flex gap-10 md:gap-14 reveal reveal-delay-4">
               {[
-                { value: "150+", label: "Projects" },
-                { value: "99%", label: "Retention" },
-                { value: "10+", label: "Years" },
+                { value: "50+", label: "Projects Shipped" },
+                { value: "15+", label: "Global Clients" },
+                { value: "5+", label: "Years" },
               ].map((stat, i) => (
                 <div key={i} className="text-left">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-0.5">

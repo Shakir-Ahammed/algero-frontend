@@ -41,9 +41,9 @@ export const BlogPage = () => {
   useScrollReveal();
 
   useSeo({
-    title: "Blog",
+    title: "Blog — Software Engineering, Design & DevOps Insights",
     description:
-      "Tutorials, architectural deep-dives, and tech updates straight from our engineering team.",
+      "Technical insights, engineering deep-dives, and product development strategies from the Algero team in Bangladesh.",
   });
 
   const { data: apiBlogs } = useApiData<ApiBlog[]>("/blogs", []);
@@ -54,8 +54,8 @@ export const BlogPage = () => {
   return (
     <div className="pb-24 min-h-screen">
       <PageHeader
-        title="Insights & Engineering"
-        subtitle="Tutorials, architectural deep-dives, and tech updates straight from our engineering team."
+        title="Engineering & Product Insights"
+        subtitle="Technical deep-dives, product development strategies, and engineering best practices from the Algero team."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

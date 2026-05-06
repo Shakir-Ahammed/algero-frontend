@@ -10,22 +10,23 @@ export const CodeShowcaseSection = () => (
       <div className="grid lg:grid-cols-2 gap-20 items-center">
         <div className="reveal-left">
           <p className="text-sm font-semibold text-blue-400 uppercase tracking-[0.2em] mb-4">
-            Why Algero
+            Why Choose Us
           </p>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-            Built for the future. <br />
-            <span className="text-gradient">Delivered today.</span>
+            Why Companies{" "}
+            <span className="text-gradient">Choose Algero</span>
           </h2>
           <p className="text-lg text-gray-400/80 mb-10 leading-relaxed">
-            We don't just write code; we build resilient architectures. Our
-            engineering principles ensure your product can scale from day one.
+            We don't just write code — we build resilient architectures.
+            Our engineering principles ensure your product can scale from
+            day one, backed by modern DevOps and security best practices.
           </p>
           <div className="space-y-4">
             {[
-              "Zero-downtime deployments & CI/CD pipelines.",
-              "Pixel-perfect, accessible UI components.",
-              "Enterprise-grade security standards.",
-              "Dedicated post-launch support & scaling.",
+              "Production-ready architecture — built to handle 10x growth without re-engineering.",
+              "CI/CD pipelines with zero-downtime deployments on every release.",
+              "Pixel-perfect, accessible UI built to WCAG 2.1 standards.",
+              "Dedicated post-launch support with 24-hour SLA response times.",
             ].map((item, i) => (
               <div
                 key={i}

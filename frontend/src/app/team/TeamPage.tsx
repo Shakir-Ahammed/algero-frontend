@@ -7,6 +7,7 @@ import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { TEAM } from "../../features/team/team.data";
 import { Button } from "../../components/ui/Button";
 import type { TeamMember } from "../../types";
+import { useSeo } from "../../hooks/useSeo";
 
 interface ApiTeamMember {
   id: number;
@@ -50,6 +51,10 @@ export const TeamPage = () => {
   const [focusedIdx, setFocusedIdx] = useState<number | null>(null);
   const [mobileExpandedIdx, setMobileExpandedIdx] = useState<number | null>(null);
   useScrollReveal();
+  useSeo({
+    title: "Meet the Algero Team — Engineers & Designers in Bangladesh",
+    description: "Meet the people behind Algero. Our team of software engineers, product designers, and DevOps specialists based in Rajshahi, Bangladesh.",
+  });
 
   const { data: apiTeam } = useApiData<ApiTeamMember[]>("/team-members", []);
 
@@ -89,9 +94,9 @@ export const TeamPage = () => {
       <div className="floating-orb bottom-[30%] left-[5%] w-[350px] h-[350px] bg-cyan-600/6 animate-glow-pulse animation-delay-3000"></div>
 
       <PageHeader
-        label="Our People"
-        title="Meet The Team"
-        subtitle="The brilliant engineers, creative designers, and visionary leaders driving Algero forward."
+        label="Our Team"
+        title="Meet the Team Behind Algero"
+        subtitle="Software engineers, product designers, and DevOps specialists based in Rajshahi, Bangladesh — building for the world."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

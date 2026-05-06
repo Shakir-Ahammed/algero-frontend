@@ -5,12 +5,17 @@ import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { PROJECTS } from "../../features/projects/project.data";
 import { apiFetch } from "../../lib/api";
 import type { Project } from "../../types";
+import { useSeo } from "../../hooks/useSeo";
 
 export const ProjectsPage = () => {
   const [filter, setFilter] = useState("All");
   const [projects, setProjects] = useState<Project[]>(PROJECTS);
   const categories = ["All", "Web App", "Mobile App", "UI/UX", "DevOps"];
   useScrollReveal();
+  useSeo({
+    title: "Our Work — Software & App Projects by Algero",
+    description: "See the web applications, mobile apps, and cloud platforms Algero has built for startups and enterprises. Real projects, real results.",
+  });
 
   useEffect(() => {
     apiFetch<Project[]>("/projects")
@@ -30,8 +35,8 @@ export const ProjectsPage = () => {
   return (
     <div className="pb-24 min-h-screen">
       <PageHeader
-        title="Our Work"
-        subtitle="Explore our portfolio of cutting-edge applications, robust infrastructures, and beautiful interfaces."
+        title="Projects We've Shipped"
+        subtitle="Web applications, mobile apps, and cloud platforms we've built for startups and enterprises."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

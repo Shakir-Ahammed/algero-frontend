@@ -45,15 +45,15 @@ export const ServicesPreviewSection = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20">
           <div className="reveal-left">
             <p className="text-sm font-semibold text-blue-400 uppercase tracking-[0.2em] mb-4">
-              What We Do
+              Our Services
             </p>
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
-              Our Specialized{" "}
+              Software Development{" "}
               <span className="text-gradient">Services</span>
             </h2>
             <p className="text-lg text-gray-400/80 max-w-2xl leading-relaxed">
-              From concept to deployment, we provide end-to-end technical
-              solutions.
+              End-to-end software engineering — from product strategy
+              to production deployment. Built with Laravel, React, Flutter, and AWS.
             </p>
           </div>
           <div className="reveal-right">
@@ -62,7 +62,7 @@ export const ServicesPreviewSection = () => {
               className="mt-6 md:mt-0"
               onClick={() => navigate("/services")}
             >
-              All Services
+              Explore All Services
             </Button>
           </div>
         </div>
