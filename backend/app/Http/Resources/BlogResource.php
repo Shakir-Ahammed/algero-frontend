@@ -17,9 +17,10 @@ class BlogResource extends JsonResource
             'excerpt'      => $this->excerpt,
             'content'      => $this->content,
             'image'        => $this->image,
+            'images'       => $this->images ?? [],
             'author'       => $this->author,
-            'read'         => $this->read_time,      // matches frontend "read" key
-            'date'         => $this->published_at?->format('M d, Y'),  // matches frontend "date" format
+            'read'         => $this->read_time,
+            'date'         => $this->published_at?->format('M d, Y'),
             'published_at' => $this->published_at?->toISOString(),
             'created_at'   => $this->created_at->toISOString(),
             'updated_at'   => $this->updated_at->toISOString(),

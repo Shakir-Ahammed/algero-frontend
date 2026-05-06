@@ -1,5 +1,5 @@
 import { ArrowRight, Calendar } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
 import { useApiData } from "../../../hooks/useApiData";
 import { BLOG_POSTS } from "../../../features/blog/blog.data";
@@ -8,21 +8,24 @@ import type { BlogPost } from "../../../types";
 interface ApiBlog {
   id: number;
   title: string;
+  slug: string;
   category: string;
   image: string | null;
-  read_time: string | null;
+  images: string[] | null;
+  read: string | null;
+  date: string | null;
   published_at: string | null;
 }
 
 function mapApiBlog(b: ApiBlog): BlogPost {
   return {
+    id: b.id,
     title: b.title,
+    slug: b.slug,
     category: b.category,
-    date: b.published_at
-      ? new Date(b.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-      : "",
+    date: b.date ?? "",
     image: b.image || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80",
-    read: b.read_time || "5 min read",
+    read: b.read || "5 min read",
   };
 }
 
@@ -58,8 +61,9 @@ export const BlogPreviewSection = () => {
         </div>
         <div className="grid md:grid-cols-2 gap-8">
           {blogs.slice(0, 2).map((post, idx) => (
-            <div
-              key={idx}
+            <Link
+              to={`/blog/${post.slug}`}
+              key={post.slug}
               className="glass-card rounded-3xl overflow-hidden group cursor-pointer flex flex-col sm:flex-row reveal card-premium card-highlight"
               style={{ transitionDelay: `${idx * 150}ms` }}
             >
@@ -88,7 +92,7 @@ export const BlogPreviewSection = () => {
                   <ArrowRight className="w-4 h-4 ml-auto text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-500 transform -translate-x-3 group-hover:translate-x-0" />
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
