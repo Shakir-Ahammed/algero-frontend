@@ -70,7 +70,7 @@ export const ServicesPreviewSection = () => {
           {services.slice(0, 3).map((service, idx) => (
             <div
               key={idx}
-              className="glass-card card-premium p-8 rounded-3xl group glow-border cursor-pointer reveal"
+              className="glass-card card-premium card-highlight p-8 rounded-3xl group glow-border cursor-pointer reveal"
               style={{ transitionDelay: `${idx * 120}ms` }}
             >
               <div className="w-14 h-14 bg-blue-500/[0.08] border border-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-blue-500/20 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-500">
