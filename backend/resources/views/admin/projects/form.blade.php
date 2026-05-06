@@ -7,7 +7,10 @@
         <h2>{{ $project ? 'Edit Project' : 'Add New Project' }}</h2>
         <p>{{ $project ? 'Update project details' : 'Add a new portfolio project' }}</p>
     </div>
-    <a href="/admin/projects" class="btn btn-sm btn-edit">← Back to Projects</a>
+    <a href="/admin/projects" class="btn btn-sm btn-edit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Back to Projects
+    </a>
 </div>
 
 <div class="card" style="padding: 32px;">
@@ -32,8 +35,13 @@
             </div>
 
             <div class="form-group full">
-                <label>Project Image</label>
+                <label>Cover Image</label>
                 @include('admin.partials.upload', ['name' => 'image', 'value' => $project?->image])
+            </div>
+
+            <div class="form-group full">
+                <label>Gallery Images</label>
+                @include('admin.partials.multi-upload', ['name' => 'images', 'value' => $project?->images])
             </div>
 
             <div class="form-group full">
@@ -78,14 +86,20 @@
                     <div class="checkbox-row">
                         <input type="checkbox" id="is_featured" name="is_featured"
                                {{ old('is_featured', $project?->is_featured ?? false) ? 'checked' : '' }}>
-                        <label for="is_featured" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--text-primary);">★ Featured</label>
+                        <label for="is_featured" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--text-primary);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:var(--warning);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            Featured
+                        </label>
                     </div>
                 </div>
             </div>
         </div>
 
         <div style="margin-top: 24px; display: flex; gap: 12px;">
-            <button type="submit" class="btn btn-primary">{{ $project ? 'Update Project' : 'Create Project' }}</button>
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                {{ $project ? 'Update Project' : 'Create Project' }}
+            </button>
             <a href="/admin/projects" class="btn btn-edit">Cancel</a>
         </div>
     </form>

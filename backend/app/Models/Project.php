@@ -12,6 +12,7 @@ class Project extends Model
         'slug',
         'category',
         'image',
+        'images',
         'description',
         'tech',
         'client',
@@ -23,6 +24,7 @@ class Project extends Model
 
     protected $casts = [
         'tech'        => 'array',
+        'images'      => 'array',
         'is_featured' => 'boolean',
         'is_active'   => 'boolean',
     ];

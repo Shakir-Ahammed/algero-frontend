@@ -14,6 +14,7 @@ class Blog extends Model
         'excerpt',
         'content',
         'image',
+        'images',
         'author',
         'read_time',
         'published_at',
@@ -21,6 +22,7 @@ class Blog extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
+        'images'       => 'array',
     ];
 
     /**
