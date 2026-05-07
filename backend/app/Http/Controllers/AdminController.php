@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\Blog;
 use App\Models\ContactLead;
 use App\Models\Project;
@@ -73,7 +74,7 @@ class AdminController extends Controller
             'name'      => $data['name'],
             'email'     => $data['email'],
             'password'  => Hash::make($data['password']),
-            'role'      => 'admin',
+            'role'      => UserRole::Admin,
             'is_active' => false,
         ]);
 
@@ -107,7 +108,7 @@ class AdminController extends Controller
 
         // Super Admin gets pending counts for the approval dashboard
         if (Auth::user()->isSuperAdmin()) {
-            $data['pendingUsers']    = User::inactive()->where('role', '!=', 'super_admin')->count();
+            $data['pendingUsers']    = User::inactive()->where('role', '!=', UserRole::SuperAdmin)->count();
             $data['pendingTeam']     = TeamMember::pending()->count();
             $data['pendingProjects'] = Project::pending()->count();
             $data['pendingBlogs']    = Blog::pending()->count();
@@ -525,7 +526,7 @@ class AdminController extends Controller
     public function approvals()
     {
         return view('admin.approvals.index', [
-            'pendingUsers'    => User::inactive()->where('role', '!=', 'super_admin')->orderByDesc('created_at')->get(),
+            'pendingUsers'    => User::inactive()->where('role', '!=', UserRole::SuperAdmin)->orderByDesc('created_at')->get(),
             'pendingTeam'     => TeamMember::pending()->orderByDesc('created_at')->get(),
             'pendingProjects' => Project::pending()->orderByDesc('created_at')->get(),
             'pendingBlogs'    => Blog::pending()->orderByDesc('created_at')->get(),
@@ -553,7 +554,7 @@ class AdminController extends Controller
     public function users()
     {
         return view('admin.users.index', [
-            'users' => User::where('role', '!=', 'super_admin')->orderByDesc('created_at')->paginate(20),
+            'users' => User::where('role', '!=', UserRole::SuperAdmin)->orderByDesc('created_at')->paginate(20),
         ]);
     }
 

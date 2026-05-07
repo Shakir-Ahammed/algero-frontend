@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +19,7 @@ class PromoteSuperAdminSeeder extends Seeder
 
         if ($user) {
             $user->update([
-                'role'      => 'super_admin',
+                'role'      => UserRole::SuperAdmin,
                 'is_active' => true,
             ]);
 
