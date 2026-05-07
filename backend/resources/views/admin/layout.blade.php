@@ -296,6 +296,16 @@
         .badge-draft { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
         .badge-inactive { background: rgba(100, 116, 139, 0.12); color: var(--text-muted); }
 
+        /* ─── Views Count ─── */
+        .views-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
         /* ─── Pagination ─── */
         .pagination { display: flex; gap: 4px; justify-content: center; padding: 20px; }
         .pagination a, .pagination span {

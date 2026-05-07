@@ -20,6 +20,7 @@ class BlogResource extends JsonResource
             'images'       => $this->images ?? [],
             'author'       => $this->author,
             'read'         => $this->read_time,
+            'views'        => $this->views ?? 0,
             'date'         => $this->published_at?->format('M d, Y'),
             'published_at' => $this->published_at?->toISOString(),
             'created_at'   => $this->created_at->toISOString(),
