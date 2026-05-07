@@ -12,12 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { Button } from "../../components/ui/Button";
+import { useSeo } from "../../hooks/useSeo";
 
 const STATS = [
-  { stat: "10+", label: "Years Experience", icon: Clock, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-  { stat: "150+", label: "Projects Delivered", icon: Rocket, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-  { stat: "99%", label: "Client Retention", icon: Award, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
-  { stat: "24/7", label: "Global Support", icon: Globe2, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  { stat: "5+", label: "Years Experience", icon: Clock, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+  { stat: "50+", label: "Projects Delivered", icon: Rocket, color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+  { stat: "15+", label: "Global Clients", icon: Award, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
+  { stat: "24/7", label: "Support & Monitoring", icon: Globe2, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
 ];
 
 const VALUES = [
@@ -29,6 +30,10 @@ const VALUES = [
 export const AboutPage = () => {
   const navigate = useNavigate();
   useScrollReveal();
+  useSeo({
+    title: "About Algero — Software Agency in Rajshahi, Bangladesh",
+    description: "Algero is a Rajshahi-based software agency building production-grade digital products for startups and enterprises. Meet our team of engineers, designers, and strategists.",
+  });
 
   return (
     <div className="pb-24 min-h-screen relative">
@@ -38,8 +43,8 @@ export const AboutPage = () => {
 
       <PageHeader
         label="About Us"
-        title="About Algero"
-        subtitle="We are a collective of elite engineers, designers, and strategists dedicated to pushing the boundaries of what technology can achieve."
+        title="A Software Agency Built on Engineering Excellence"
+        subtitle="Founded in Rajshahi, Bangladesh — we build production-grade software for startups and enterprises across 10+ countries."
       />
 
       {/* Hero Image */}
@@ -47,7 +52,7 @@ export const AboutPage = () => {
         <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-28 reveal-scale img-hover-zoom">
           <img
             src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2000&q=80"
-            alt="Team collaborating"
+            alt="Algero software development team working on a project"
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -59,8 +64,8 @@ export const AboutPage = () => {
                 <Users className="w-4 h-4 text-blue-400" />
               </div>
               <div>
-                <div className="text-white font-bold text-sm">50+ Engineers</div>
-                <div className="text-gray-400 text-[10px] uppercase tracking-wider">Across 8 Countries</div>
+                <div className="text-white font-bold text-sm">Engineering Team</div>
+                <div className="text-gray-400 text-[10px] uppercase tracking-wider">Rajshahi, Bangladesh</div>
               </div>
             </div>
           </div>

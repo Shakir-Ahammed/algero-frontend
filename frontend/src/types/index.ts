@@ -20,12 +20,16 @@ export interface Service {
 }
 
 export interface BlogPost {
+  id?: number;
   title: string;
+  slug: string;
   category: string;
   date: string;
   image: string;
   read: string;
   excerpt?: string;
+  content?: string;
+  images?: string[];
   author?: string;
 }
 

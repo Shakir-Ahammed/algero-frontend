@@ -12,10 +12,10 @@ export const TestimonialsSection = () => (
           Testimonials
         </p>
         <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-5 leading-tight">
-          Client <span className="text-gradient">Feedback</span>
+          What Our Clients <span className="text-gradient">Say</span>
         </h2>
         <p className="text-lg text-gray-400/80 max-w-2xl mx-auto leading-relaxed">
-          Don't just take our word for it. Here is what our partners have to say.
+          Hear from teams we've worked with on web apps, mobile applications, and cloud infrastructure.
         </p>
       </div>
       <div className="grid md:grid-cols-3 gap-8">

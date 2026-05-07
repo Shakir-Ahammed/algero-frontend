@@ -5,9 +5,14 @@ import { useRecaptcha } from "../../hooks/useRecaptcha";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { Button } from "../../components/ui/Button";
 import { apiPost } from "../../lib/api";
+import { useSeo } from "../../hooks/useSeo";
 
 export const ContactPage = () => {
   useScrollReveal();
+  useSeo({
+    title: "Contact Algero — Get a Free Software Development Estimate",
+    description: "Contact Algero for custom software development, mobile apps, or DevOps consulting. Based in Rajshahi, Bangladesh — serving clients globally.",
+  });
 
   const [form, setForm] = useState({
     first_name: "",
@@ -48,8 +53,8 @@ export const ContactPage = () => {
   return (
     <div className="pb-24 min-h-screen">
       <PageHeader
-        title="Let's Talk"
-        subtitle="Whether you have a groundbreaking idea or need to scale your existing architecture, we're here to help."
+        title="Let's Build Something Together"
+        subtitle="Tell us about your project and we'll get back to you within 24 hours with a free estimate. Based in Rajshahi, Bangladesh — serving clients globally."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
@@ -81,7 +86,7 @@ export const ContactPage = () => {
                   <p className="font-semibold text-white text-lg mb-1">
                     Call us
                   </p>
-                  <p className="text-gray-400">+1 (555) 123-4567</p>
+                  <p className="text-gray-400">+880 1XXX-XXXXXX</p>
                 </div>
               </div>
               <div className="flex items-start p-6 glass-card rounded-2xl hover:border-blue-500/50 transition-colors">
@@ -90,12 +95,12 @@ export const ContactPage = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-white text-lg mb-1">
-                    Visit our HQ
+                    Our Office
                   </p>
                   <p className="text-gray-400">
-                    100 Tech Hub Square
+                    Rajshahi 6000
                     <br />
-                    San Francisco, CA 94105
+                    Bangladesh
                   </p>
                 </div>
               </div>

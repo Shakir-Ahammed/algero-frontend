@@ -7,6 +7,7 @@ import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { TEAM } from "../../features/team/team.data";
 import { Button } from "../../components/ui/Button";
 import type { TeamMember } from "../../types";
+import { useSeo } from "../../hooks/useSeo";
 
 interface ApiTeamMember {
   id: number;
@@ -43,11 +44,17 @@ const SOCIAL_ICONS = [
   { key: "github" as const, Icon: GitBranch, hoverColor: "hover:text-white hover:bg-white/15" },
 ];
 
+const COLS = 4;
+
 export const TeamPage = () => {
   const navigate = useNavigate();
   const [focusedIdx, setFocusedIdx] = useState<number | null>(null);
   const [mobileExpandedIdx, setMobileExpandedIdx] = useState<number | null>(null);
   useScrollReveal();
+  useSeo({
+    title: "Meet the Algero Team — Engineers & Designers in Bangladesh",
+    description: "Meet the people behind Algero. Our team of software engineers, product designers, and DevOps specialists based in Rajshahi, Bangladesh.",
+  });
 
   const { data: apiTeam } = useApiData<ApiTeamMember[]>("/team-members", []);
 
@@ -55,6 +62,15 @@ export const TeamPage = () => {
     () => (apiTeam.length > 0 ? apiTeam.map(mapApiTeam) : TEAM),
     [apiTeam]
   );
+
+  /* Group team members into rows of COLS */
+  const rows = useMemo(() => {
+    const result: TeamMember[][] = [];
+    for (let i = 0; i < team.length; i += COLS) {
+      result.push(team.slice(i, i + COLS));
+    }
+    return result;
+  }, [team]);
 
   const handleMouseEnter = useCallback((idx: number) => {
     setFocusedIdx(idx);
@@ -68,7 +84,8 @@ export const TeamPage = () => {
     setMobileExpandedIdx((prev) => (prev === idx ? null : idx));
   }, []);
 
-  const activeMember = focusedIdx !== null ? team[focusedIdx] : null;
+  const focusedRow = focusedIdx !== null ? Math.floor(focusedIdx / COLS) : null;
+  const focusedCol = focusedIdx !== null ? focusedIdx % COLS : null;
 
   return (
     <div className="pb-0 min-h-screen relative">
@@ -77,9 +94,9 @@ export const TeamPage = () => {
       <div className="floating-orb bottom-[30%] left-[5%] w-[350px] h-[350px] bg-cyan-600/6 animate-glow-pulse animation-delay-3000"></div>
 
       <PageHeader
-        label="Our People"
-        title="Meet The Team"
-        subtitle="The brilliant engineers, creative designers, and visionary leaders driving Algero forward."
+        label="Our Team"
+        title="Meet the Team Behind Algero"
+        subtitle="Software engineers, product designers, and DevOps specialists based in Rajshahi, Bangladesh — building for the world."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,147 +106,190 @@ export const TeamPage = () => {
           className="hidden md:block mb-8"
           onMouseLeave={handleMouseLeave}
         >
-          <div className="grid grid-cols-4 gap-6">
-            {team.map((member, idx) => {
-              const isFocused = focusedIdx === idx;
-              const isDimmed = focusedIdx !== null && !isFocused;
+          {rows.map((row, rowIdx) => {
+            const isActiveRow = focusedRow === rowIdx;
+            const rowMember = isActiveRow && focusedIdx !== null ? team[focusedIdx] : null;
 
-              return (
-                <div
-                  key={idx}
-                  className="relative cursor-pointer reveal"
-                  style={{
-                    transitionDelay: `${idx * 100}ms`,
-                  }}
-                  onMouseEnter={() => handleMouseEnter(idx)}
-                >
-                  {/* Card */}
-                  <div
-                    className="glass-card rounded-3xl overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                    style={{
-                      transform: isFocused ? "scale(1.05) translateY(-8px)" : isDimmed ? "scale(0.97)" : "scale(1)",
-                      opacity: isDimmed ? 0.3 : focusedIdx === null ? 0.85 : 1,
-                      filter: isDimmed ? "blur(1.5px)" : "blur(0px)",
-                      boxShadow: isFocused
-                        ? "0 0 40px rgba(59,130,246,0.15), 0 20px 60px rgba(0,0,0,0.3)"
-                        : "none",
-                      borderColor: isFocused ? "rgba(59,130,246,0.3)" : "rgba(255,255,255,0.06)",
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                    }}
-                  >
-                    {/* Image */}
-                    <div className="h-72 lg:h-80 overflow-hidden relative">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="w-full h-full object-cover transition-all duration-700"
-                        style={{
-                          filter: isFocused ? "grayscale(0)" : "grayscale(100%)",
-                          transform: isFocused ? "scale(1.08)" : "scale(1)",
-                        }}
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-[#0D1117]/30 to-transparent"></div>
+            return (
+              <div key={rowIdx}>
+                {/* Row of cards */}
+                <div className="grid grid-cols-4 gap-6">
+                  {row.map((member, colIdx) => {
+                    const globalIdx = rowIdx * COLS + colIdx;
+                    const isFocused = focusedIdx === globalIdx;
+                    const isDimmed = focusedIdx !== null && !isFocused;
 
-                      {/* Glow effect on focused card */}
-                      {isFocused && (
-                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/10 via-transparent to-cyan-500/5 transition-opacity duration-500"></div>
-                      )}
-
-                      {/* Social icons — appear on focus */}
+                    return (
                       <div
-                        className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                        key={globalIdx}
+                        className="relative cursor-pointer reveal"
+                        style={{ transitionDelay: `${globalIdx * 100}ms` }}
+                        onMouseEnter={() => handleMouseEnter(globalIdx)}
+                      >
+                        <div
+                          className="glass-card rounded-3xl overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                          style={{
+                            transform: isFocused
+                              ? "scale(1.05) translateY(-8px)"
+                              : isDimmed
+                                ? "scale(0.97)"
+                                : "scale(1)",
+                            opacity: isDimmed ? 0.3 : focusedIdx === null ? 0.85 : 1,
+                            filter: isDimmed ? "blur(1.5px)" : "blur(0px)",
+                            boxShadow: isFocused
+                              ? "0 0 40px rgba(59,130,246,0.15), 0 20px 60px rgba(0,0,0,0.3)"
+                              : "none",
+                            borderColor: isFocused
+                              ? "rgba(59,130,246,0.3)"
+                              : "rgba(255,255,255,0.06)",
+                            borderWidth: "1px",
+                            borderStyle: "solid",
+                          }}
+                        >
+                          {/* Image */}
+                          <div className="h-72 lg:h-80 overflow-hidden relative">
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="w-full h-full object-cover transition-all duration-700"
+                              style={{
+                                filter: isFocused ? "grayscale(0)" : "grayscale(100%)",
+                                transform: isFocused ? "scale(1.08)" : "scale(1)",
+                              }}
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1117] via-[#0D1117]/30 to-transparent" />
+
+                            {isFocused && (
+                              <div className="absolute inset-0 bg-gradient-to-t from-blue-600/10 via-transparent to-cyan-500/5 transition-opacity duration-500" />
+                            )}
+
+                            {/* Social icons on focus */}
+                            <div
+                              className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                              style={{
+                                opacity: isFocused ? 1 : 0,
+                                transform: isFocused ? "translateY(0)" : "translateY(12px)",
+                              }}
+                            >
+                              {SOCIAL_ICONS.map(({ key, Icon, hoverColor }) =>
+                                member.social?.[key] ? (
+                                  <a
+                                    key={key}
+                                    href={member.social[key]}
+                                    className={`w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 transition-all duration-300 ${hoverColor}`}
+                                    aria-label={key}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Icon className="w-3.5 h-3.5" />
+                                  </a>
+                                ) : null,
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Name & Role */}
+                          <div className="p-5 text-center">
+                            <h3
+                              className="text-lg font-bold mb-1 transition-colors duration-500"
+                              style={{ color: isFocused ? "rgb(96,165,250)" : "white" }}
+                            >
+                              {member.name}
+                            </h3>
+                            <p className="text-blue-400/60 text-[11px] font-semibold uppercase tracking-[0.15em]">
+                              {member.role}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* ===== DETAILS PANEL — inserted directly after this row ===== */}
+                <div
+                  className="transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{
+                    maxHeight: isActiveRow && rowMember ? "200px" : "0px",
+                    opacity: isActiveRow && rowMember ? 1 : 0,
+                    transform: isActiveRow && rowMember ? "translateY(0)" : "translateY(-8px)",
+                    marginTop: isActiveRow && rowMember ? "20px" : "0px",
+                    marginBottom: isActiveRow && rowMember ? "8px" : "0px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {isActiveRow && rowMember && (
+                    <div className="relative">
+                      {/* Arrow pointer pointing to the focused card */}
+                      <div
+                        className="absolute -top-[7px] z-20 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
                         style={{
-                          opacity: isFocused ? 1 : 0,
-                          transform: isFocused ? "translateY(0)" : "translateY(12px)",
+                          left:
+                            focusedCol !== null
+                              ? `calc(${(focusedCol * 100) / COLS}% + ${100 / COLS / 2}% - 10px)`
+                              : "50%",
                         }}
                       >
-                        {SOCIAL_ICONS.map(({ key, Icon, hoverColor }) =>
-                          member.social?.[key] ? (
-                            <a
-                              key={key}
-                              href={member.social[key]}
-                              className={`w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center text-white/70 transition-all duration-300 ${hoverColor}`}
-                              aria-label={key}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Icon className="w-3.5 h-3.5" />
-                            </a>
-                          ) : null,
-                        )}
+                        <div
+                          className="w-[14px] h-[14px] rotate-45 border-l border-t border-blue-500/30"
+                          style={{
+                            background: "rgba(17, 24, 39, 0.7)",
+                          }}
+                        />
+                      </div>
+
+                      <div className="glass-card rounded-2xl p-8 border border-blue-500/20 relative overflow-hidden">
+                        {/* Background glow */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-blue-600/8 rounded-full filter blur-[80px] pointer-events-none" />
+
+                        <div className="relative z-10 flex items-center gap-8">
+                          <div className="flex-shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-500/30">
+                            <img
+                              src={rowMember.image}
+                              alt={rowMember.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 mb-1">
+                              <h3 className="text-xl font-bold text-white">
+                                {rowMember.name}
+                              </h3>
+                              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-[0.15em] bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                                {rowMember.role}
+                              </span>
+                            </div>
+                            <p className="text-gray-400/90 text-sm leading-relaxed max-w-2xl">
+                              {rowMember.bio}
+                            </p>
+                          </div>
+                          <div className="flex gap-2 flex-shrink-0">
+                            {SOCIAL_ICONS.map(({ key, Icon, hoverColor }) =>
+                              rowMember.social?.[key] ? (
+                                <a
+                                  key={key}
+                                  href={rowMember.social[key]}
+                                  className={`w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-gray-500 transition-all duration-300 ${hoverColor}`}
+                                  aria-label={key}
+                                >
+                                  <Icon className="w-4 h-4" />
+                                </a>
+                              ) : null,
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Name & Role */}
-                    <div className="p-5 text-center">
-                      <h3
-                        className="text-lg font-bold mb-1 transition-colors duration-500"
-                        style={{ color: isFocused ? "rgb(96,165,250)" : "white" }}
-                      >
-                        {member.name}
-                      </h3>
-                      <p className="text-blue-400/60 text-[11px] font-semibold uppercase tracking-[0.15em]">
-                        {member.role}
-                      </p>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              );
-            })}
-          </div>
 
-          {/* ===== DETAILS PANEL (Desktop) ===== */}
-          <div
-            className="mt-6 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-            style={{
-              maxHeight: activeMember ? "200px" : "0px",
-              opacity: activeMember ? 1 : 0,
-              transform: activeMember ? "translateY(0)" : "translateY(16px)",
-            }}
-          >
-            {activeMember && (
-              <div className="glass-card rounded-2xl p-8 border border-blue-500/20 relative overflow-hidden">
-                {/* Background glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-blue-600/8 rounded-full filter blur-[80px] pointer-events-none"></div>
-
-                <div className="relative z-10 flex items-center gap-8">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-500/30">
-                    <img
-                      src={activeMember.image}
-                      alt={activeMember.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-xl font-bold text-white">{activeMember.name}</h3>
-                      <span className="text-[10px] font-bold text-blue-400 uppercase tracking-[0.15em] bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
-                        {activeMember.role}
-                      </span>
-                    </div>
-                    <p className="text-gray-400/90 text-sm leading-relaxed max-w-2xl">
-                      {activeMember.bio}
-                    </p>
-                  </div>
-                  <div className="flex gap-2 flex-shrink-0">
-                    {SOCIAL_ICONS.map(({ key, Icon, hoverColor }) =>
-                      activeMember.social?.[key] ? (
-                        <a
-                          key={key}
-                          href={activeMember.social[key]}
-                          className={`w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-gray-500 transition-all duration-300 ${hoverColor}`}
-                          aria-label={key}
-                        >
-                          <Icon className="w-4 h-4" />
-                        </a>
-                      ) : null,
-                    )}
-                  </div>
-                </div>
+                {/* Row spacing */}
+                {rowIdx < rows.length - 1 && (
+                  <div style={{ height: isActiveRow ? "8px" : "24px" }} className="transition-all duration-500" />
+                )}
               </div>
-            )}
-          </div>
+            );
+          })}
         </div>
 
         {/* ===== MOBILE CARDS (Click to expand) ===== */}

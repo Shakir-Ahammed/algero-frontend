@@ -406,6 +406,7 @@
             width: 0%;
         }
     </style>
+    @stack('styles')
 </head>
 <body>
     <div class="admin-wrapper">
@@ -473,5 +474,6 @@
             @yield('content')
         </main>
     </div>
+    @stack('scripts')
 </body>
 </html>

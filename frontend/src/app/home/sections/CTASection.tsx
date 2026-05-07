@@ -17,14 +17,15 @@ export const CTASection = () => {
 
       <div className="max-w-4xl mx-auto px-4 relative z-10 text-center reveal">
         <p className="text-sm font-semibold text-blue-200/80 uppercase tracking-[0.2em] mb-6">
-          Let's Build Together
+          Start Your Project
         </p>
         <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6 text-white tracking-tight leading-[1.1]">
-          Ready to build something{" "}
-          <span className="italic">extraordinary</span>?
+          Have a project{" "}
+          <span className="italic">in mind</span>?
         </h2>
         <p className="text-lg text-blue-100/70 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Let's discuss your vision and turn it into a world-class digital product.
+          Tell us about your idea and we'll get back to you within
+          24 hours with a free project estimate.
         </p>
         <Button
           variant="light"
@@ -32,7 +33,7 @@ export const CTASection = () => {
           onClick={() => navigate("/contact")}
           icon={<ArrowRight className="w-5 h-5" />}
         >
-          Start a Conversation
+          Get a Free Estimate
         </Button>
       </div>
     </section>

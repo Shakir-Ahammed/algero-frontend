@@ -6,6 +6,7 @@ import { useApiData } from "../../hooks/useApiData";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
 import { SERVICES } from "../../features/services/service.data";
 import { Button } from "../../components/ui/Button";
+import { useSeo } from "../../hooks/useSeo";
 import type { Service } from "../../types";
 
 // Map API icon strings to Lucide components
@@ -126,6 +127,10 @@ const ServiceCard = ({
 export const ServicesPage = () => {
   const navigate = useNavigate();
   useScrollReveal();
+  useSeo({
+    title: "Software Development Services — Web, Mobile, DevOps, Security",
+    description: "Explore Algero's services: custom software development, mobile apps, UI/UX design, DevOps engineering, and cybersecurity. Built with Laravel, React, Flutter, and AWS.",
+  });
 
   const { data: apiServices } = useApiData<ApiService[]>("/services", []);
 
@@ -142,9 +147,9 @@ export const ServicesPage = () => {
       <div className="floating-orb bottom-[10%] left-[30%] w-[350px] h-[350px] bg-purple-600/5 animate-glow-pulse animation-delay-4000"></div>
 
       <PageHeader
-        label="What We Offer"
-        title="Our Services"
-        subtitle="Comprehensive, end-to-end technical solutions designed to scale your business and outpace the competition."
+        label="Our Services"
+        title="Software Development Services for Startups & Enterprises"
+        subtitle="End-to-end technical solutions from product strategy to production deployment. Built with Laravel, React, Flutter, and AWS."
       />
 
       {/* Cards Grid */}
