@@ -39,6 +39,7 @@ Route::post('/contact', [ContactLeadController::class, 'store']);
 
 // Auth
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 /*
 |--------------------------------------------------------------------------

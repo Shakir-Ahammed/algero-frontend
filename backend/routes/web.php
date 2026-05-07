@@ -11,10 +11,12 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/admin/login', [AdminController::class, 'loginForm'])->name('login');
     Route::post('/admin/login', [AdminController::class, 'login']);
+    Route::get('/admin/register', [AdminController::class, 'registerForm'])->name('register');
+    Route::post('/admin/register', [AdminController::class, 'register']);
 });
 
-// ─── Admin Panel (auth required) ──────────────────────────
-Route::middleware('auth')->prefix('admin')->group(function () {
+// ─── Admin Panel (auth required + active user) ────────────
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->prefix('admin')->group(function () {
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
@@ -62,4 +64,17 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     // Image Upload
     Route::post('/upload', [AdminController::class, 'uploadImage'])->name('admin.upload');
+
+    // ─── Super Admin Only ──────────────────────────────────
+    Route::middleware(\App\Http\Middleware\EnsureSuperAdmin::class)->group(function () {
+        // Approval Management
+        Route::get('/approvals', [AdminController::class, 'approvals'])->name('admin.approvals');
+        Route::post('/approvals/{type}/{id}/approve', [AdminController::class, 'approveContent'])->name('admin.approvals.approve');
+        Route::post('/approvals/{type}/{id}/reject', [AdminController::class, 'rejectContent'])->name('admin.approvals.reject');
+
+        // User Management
+        Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::post('/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
+        Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
+    });
 });

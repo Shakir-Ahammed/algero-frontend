@@ -8,8 +8,10 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Subscriber;
 use App\Models\TeamMember;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -32,6 +34,16 @@ class AdminController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            // Check if the user is active
+            if (!Auth::user()->is_active) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withErrors([
+                    'email' => 'Your account is not yet activated. Please wait for Super Admin approval.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
             return redirect()->intended('/admin');
         }
@@ -39,6 +51,34 @@ class AdminController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials are incorrect.',
         ])->onlyInput('email');
+    }
+
+    public function registerForm()
+    {
+        if (Auth::check()) {
+            return redirect('/admin');
+        }
+        return view('admin.register');
+    }
+
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        User::create([
+            'name'      => $data['name'],
+            'email'     => $data['email'],
+            'password'  => Hash::make($data['password']),
+            'role'      => 'admin',
+            'is_active' => false,
+        ]);
+
+        return redirect('/admin/login')
+            ->with('success', 'Registration successful! Your account is pending activation by the Super Admin.');
     }
 
     public function logout(Request $request)
@@ -53,7 +93,7 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        return view('admin.dashboard', [
+        $data = [
             'blogCount'       => Blog::count(),
             'teamCount'       => TeamMember::count(),
             'serviceCount'    => Service::count(),
@@ -63,7 +103,17 @@ class AdminController extends Controller
             'recentBlogs'     => Blog::orderByDesc('created_at')->take(5)->get(),
             'recentSubs'      => Subscriber::orderByDesc('subscribed_at')->take(5)->get(),
             'recentLeads'     => ContactLead::orderByDesc('created_at')->take(5)->get(),
-        ]);
+        ];
+
+        // Super Admin gets pending counts for the approval dashboard
+        if (Auth::user()->isSuperAdmin()) {
+            $data['pendingUsers']    = User::inactive()->where('role', '!=', 'super_admin')->count();
+            $data['pendingTeam']     = TeamMember::pending()->count();
+            $data['pendingProjects'] = Project::pending()->count();
+            $data['pendingBlogs']    = Blog::pending()->count();
+        }
+
+        return view('admin.dashboard', $data);
     }
 
     // ─── Blogs ────────────────────────────────────────────
@@ -96,9 +146,16 @@ class AdminController extends Controller
 
         $data['images'] = $this->parseImages($data['images'] ?? '');
 
+        // Super Admins can auto-approve; regular admins get pending status
+        $data['status'] = Auth::user()->isSuperAdmin() ? 'approved' : 'pending';
+
         Blog::create($data);
 
-        return redirect('/admin/blogs')->with('success', 'Blog created successfully.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Blog created and approved.'
+            : 'Blog created. It will be visible after Super Admin approval.';
+
+        return redirect('/admin/blogs')->with('success', $message);
     }
 
     public function editBlog(int $id)
@@ -130,9 +187,18 @@ class AdminController extends Controller
             $data['slug'] = Str::slug($data['title']);
         }
 
+        // Regular admins editing content resets status to pending
+        if (!Auth::user()->isSuperAdmin()) {
+            $data['status'] = 'pending';
+        }
+
         $blog->update($data);
 
-        return redirect('/admin/blogs')->with('success', 'Blog updated successfully.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Blog updated successfully.'
+            : 'Blog updated. It will be reviewed by Super Admin.';
+
+        return redirect('/admin/blogs')->with('success', $message);
     }
 
     public function deleteBlog(int $id)
@@ -168,9 +234,15 @@ class AdminController extends Controller
             'sort_order'      => 'nullable|integer',
         ]);
 
+        $data['status'] = Auth::user()->isSuperAdmin() ? 'approved' : 'pending';
+
         TeamMember::create($data);
 
-        return redirect('/admin/team')->with('success', 'Team member added.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Team member added and approved.'
+            : 'Team member added. It will be visible after Super Admin approval.';
+
+        return redirect('/admin/team')->with('success', $message);
     }
 
     public function editTeamMember(int $id)
@@ -195,9 +267,17 @@ class AdminController extends Controller
             'sort_order'      => 'nullable|integer',
         ]);
 
+        if (!Auth::user()->isSuperAdmin()) {
+            $data['status'] = 'pending';
+        }
+
         $member->update($data);
 
-        return redirect('/admin/team')->with('success', 'Team member updated.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Team member updated.'
+            : 'Team member updated. It will be reviewed by Super Admin.';
+
+        return redirect('/admin/team')->with('success', $message);
     }
 
     public function deleteTeamMember(int $id)
@@ -311,10 +391,15 @@ class AdminController extends Controller
         $data['images'] = $this->parseImages($data['images'] ?? '');
         $data['is_featured'] = $request->has('is_featured');
         $data['is_active'] = $request->has('is_active');
+        $data['status'] = Auth::user()->isSuperAdmin() ? 'approved' : 'pending';
 
         Project::create($data);
 
-        return redirect('/admin/projects')->with('success', 'Project created.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Project created and approved.'
+            : 'Project created. It will be visible after Super Admin approval.';
+
+        return redirect('/admin/projects')->with('success', $message);
     }
 
     public function editProject(int $id)
@@ -351,9 +436,17 @@ class AdminController extends Controller
         $data['is_featured'] = $request->has('is_featured');
         $data['is_active'] = $request->has('is_active');
 
+        if (!Auth::user()->isSuperAdmin()) {
+            $data['status'] = 'pending';
+        }
+
         $project->update($data);
 
-        return redirect('/admin/projects')->with('success', 'Project updated.');
+        $message = Auth::user()->isSuperAdmin()
+            ? 'Project updated.'
+            : 'Project updated. It will be reviewed by Super Admin.';
+
+        return redirect('/admin/projects')->with('success', $message);
     }
 
     public function deleteProject(int $id)
@@ -406,6 +499,60 @@ class AdminController extends Controller
         return redirect('/admin/leads')->with('success', 'Lead deleted.');
     }
 
+    // ─── Super Admin: Approval Management ──────────────────
+
+    public function approvals()
+    {
+        return view('admin.approvals.index', [
+            'pendingUsers'    => User::inactive()->where('role', '!=', 'super_admin')->orderByDesc('created_at')->get(),
+            'pendingTeam'     => TeamMember::pending()->orderByDesc('created_at')->get(),
+            'pendingProjects' => Project::pending()->orderByDesc('created_at')->get(),
+            'pendingBlogs'    => Blog::pending()->orderByDesc('created_at')->get(),
+        ]);
+    }
+
+    public function approveContent(Request $request, string $type, int $id)
+    {
+        $model = $this->resolveContentModel($type, $id);
+        $model->update(['status' => 'approved']);
+
+        return redirect('/admin/approvals')->with('success', ucfirst($type) . ' approved successfully.');
+    }
+
+    public function rejectContent(Request $request, string $type, int $id)
+    {
+        $model = $this->resolveContentModel($type, $id);
+        $model->update(['status' => 'rejected']);
+
+        return redirect('/admin/approvals')->with('success', ucfirst($type) . ' rejected.');
+    }
+
+    // ─── Super Admin: User Management ──────────────────────
+
+    public function users()
+    {
+        return view('admin.users.index', [
+            'users' => User::where('role', '!=', 'super_admin')->orderByDesc('created_at')->paginate(20),
+        ]);
+    }
+
+    public function activateUser(int $id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['is_active' => true]);
+        return redirect()->back()->with('success', 'User "' . $user->name . '" has been activated.');
+    }
+
+    public function deactivateUser(int $id)
+    {
+        $user = User::findOrFail($id);
+        if ($user->isSuperAdmin()) {
+            return redirect()->back()->withErrors(['Cannot deactivate a Super Admin.']);
+        }
+        $user->update(['is_active' => false]);
+        return redirect()->back()->with('success', 'User "' . $user->name . '" has been deactivated.');
+    }
+
     // ─── Image Upload ──────────────────────────────────────
 
     public function uploadImage(Request $request)
@@ -425,6 +572,16 @@ class AdminController extends Controller
     }
 
     // ─── Helpers ──────────────────────────────────────────
+
+    private function resolveContentModel(string $type, int $id)
+    {
+        return match ($type) {
+            'blog'    => Blog::findOrFail($id),
+            'team'    => TeamMember::findOrFail($id),
+            'project' => Project::findOrFail($id),
+            default   => abort(404, 'Unknown content type.'),
+        };
+    }
 
     private function parseFeatures(?string $raw): array
     {

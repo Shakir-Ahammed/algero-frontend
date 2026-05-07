@@ -20,6 +20,7 @@ class Project extends Model
         'is_featured',
         'is_active',
         'sort_order',
+        'status',
     ];
 
     protected $casts = [
@@ -46,5 +47,21 @@ class Project extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    /**
+     * Scope: only approved projects.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    /**
+     * Scope: only pending projects.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 }

@@ -13,7 +13,8 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::active()
+        $projects = Project::approved()
+            ->active()
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->orderByDesc('created_at')
@@ -39,7 +40,7 @@ class ProjectController extends Controller
      */
     public function show(string $slug)
     {
-        $project = Project::active()->where('slug', $slug)->firstOrFail();
+        $project = Project::approved()->active()->where('slug', $slug)->firstOrFail();
 
         return response()->json([
             'id'       => $project->id,

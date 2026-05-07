@@ -11,6 +11,35 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
+     * Register a new user (inactive by default).
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'role'      => 'admin',
+            'is_active' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'Registration successful. Your account is pending activation by the Super Admin.',
+            'user'    => [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+            ],
+        ], 201);
+    }
+
+    /**
      * Login and get a Sanctum API token.
      */
     public function login(Request $request)
@@ -28,6 +57,13 @@ class AuthController extends Controller
             ]);
         }
 
+        // Check if the user account is active
+        if (! $user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account is not yet activated. Please wait for Super Admin approval.'],
+            ]);
+        }
+
         // Revoke old tokens for this device
         $user->tokens()->where('name', 'api-token')->delete();
 
@@ -40,6 +76,7 @@ class AuthController extends Controller
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $user->role,
             ],
         ]);
     }
@@ -64,6 +101,7 @@ class AuthController extends Controller
                 'id'    => $request->user()->id,
                 'name'  => $request->user()->name,
                 'email' => $request->user()->email,
+                'role'  => $request->user()->role,
             ],
         ]);
     }

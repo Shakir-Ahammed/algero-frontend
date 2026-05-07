@@ -443,6 +443,16 @@
                 <a href="/admin/subscribers" class="{{ request()->is('admin/subscribers*') ? 'active' : '' }}">
                     <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span> Subscribers
                 </a>
+
+                @if(Auth::user()->isSuperAdmin())
+                <div class="sidebar-section">Super Admin</div>
+                <a href="/admin/approvals" class="{{ request()->is('admin/approvals*') ? 'active' : '' }}">
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Approvals
+                </a>
+                <a href="/admin/users" class="{{ request()->is('admin/users*') ? 'active' : '' }}">
+                    <span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Users
+                </a>
+                @endif
             </nav>
             <div class="sidebar-footer">
                 <form method="POST" action="/admin/logout">

@@ -18,6 +18,7 @@ class Blog extends Model
         'author',
         'read_time',
         'published_at',
+        'status',
     ];
 
     protected $casts = [
@@ -43,5 +44,21 @@ class Blog extends Model
     public function scopePublished($query)
     {
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
+    }
+
+    /**
+     * Scope: only approved blogs.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    /**
+     * Scope: only pending blogs.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 }

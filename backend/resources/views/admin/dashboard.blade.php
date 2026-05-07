@@ -5,9 +5,56 @@
 <div class="page-header">
     <div>
         <h2>Dashboard</h2>
-        <p>Welcome back, {{ Auth::user()->name }}!</p>
+        <p>Welcome back, {{ Auth::user()->name }}!
+            @if(Auth::user()->isSuperAdmin())
+                <span class="badge badge-active" style="margin-left:8px;font-size:10px;">Super Admin</span>
+            @endif
+        </p>
     </div>
 </div>
+
+{{-- ─── Super Admin: Pending Approval Alert ─── --}}
+@if(Auth::user()->isSuperAdmin() && (($pendingUsers ?? 0) + ($pendingTeam ?? 0) + ($pendingProjects ?? 0) + ($pendingBlogs ?? 0)) > 0)
+<div class="approval-alert" style="margin-bottom:28px;">
+    <div class="approval-alert-inner">
+        <div class="approval-alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        </div>
+        <div class="approval-alert-content">
+            <strong>Items Awaiting Your Approval</strong>
+            <p>You have pending items that need review.</p>
+        </div>
+        <a href="/admin/approvals" class="btn btn-primary btn-sm" style="flex-shrink:0;">Review All</a>
+    </div>
+
+    <div class="pending-summary">
+        @if(($pendingUsers ?? 0) > 0)
+        <a href="/admin/approvals" class="pending-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+            <span>{{ $pendingUsers }} User{{ $pendingUsers > 1 ? 's' : '' }}</span>
+        </a>
+        @endif
+        @if(($pendingTeam ?? 0) > 0)
+        <a href="/admin/approvals" class="pending-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span>{{ $pendingTeam }} Team Member{{ $pendingTeam > 1 ? 's' : '' }}</span>
+        </a>
+        @endif
+        @if(($pendingProjects ?? 0) > 0)
+        <a href="/admin/approvals" class="pending-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>{{ $pendingProjects }} Project{{ $pendingProjects > 1 ? 's' : '' }}</span>
+        </a>
+        @endif
+        @if(($pendingBlogs ?? 0) > 0)
+        <a href="/admin/approvals" class="pending-chip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>{{ $pendingBlogs }} Blog{{ $pendingBlogs > 1 ? 's' : '' }}</span>
+        </a>
+        @endif
+    </div>
+</div>
+@endif
 
 <div class="stats-grid">
     <div class="stat-card">
@@ -58,10 +105,16 @@
                         <small style="color: var(--text-muted);">{{ $blog->category }}</small>
                     </td>
                     <td style="text-align: right;">
-                        @if($blog->published_at)
-                            <span class="badge badge-active">Published</span>
+                        @if($blog->status === 'approved')
+                            @if($blog->published_at)
+                                <span class="badge badge-active">Published</span>
+                            @else
+                                <span class="badge badge-active">Approved</span>
+                            @endif
+                        @elseif($blog->status === 'rejected')
+                            <span class="badge badge-inactive">Rejected</span>
                         @else
-                            <span class="badge badge-draft">Draft</span>
+                            <span class="badge badge-draft">Pending</span>
                         @endif
                     </td>
                 </tr>
@@ -132,4 +185,62 @@
         </tbody>
     </table>
 </div>
+
+@push('styles')
+<style>
+    .approval-alert {
+        background: rgba(245, 158, 11, 0.06);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        backdrop-filter: blur(20px);
+    }
+    .approval-alert-inner {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .approval-alert-icon {
+        color: var(--warning);
+        flex-shrink: 0;
+    }
+    .approval-alert-content {
+        flex: 1;
+    }
+    .approval-alert-content strong {
+        font-size: 15px;
+        color: #fbbf24;
+    }
+    .approval-alert-content p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+    }
+    .pending-summary {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+    .pending-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fbbf24;
+        text-decoration: none;
+        transition: all var(--transition);
+    }
+    .pending-chip:hover {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fde68a;
+        transform: translateY(-1px);
+    }
+</style>
+@endpush
 @endsection
