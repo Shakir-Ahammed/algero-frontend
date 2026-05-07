@@ -42,6 +42,9 @@ class ProjectController extends Controller
     {
         $project = Project::approved()->active()->where('slug', $slug)->firstOrFail();
 
+        // Increment view count
+        $project->increment('views');
+
         return response()->json([
             'id'         => $project->id,
             'title'      => $project->title,

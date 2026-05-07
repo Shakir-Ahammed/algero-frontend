@@ -12,13 +12,14 @@ return new class extends Migration
             $table->longText('content')->nullable()->after('description');
             $table->string('github_url', 500)->nullable()->after('url');
             $table->string('demo_url', 500)->nullable()->after('github_url');
+            $table->unsignedBigInteger('views')->default(0)->after('status');
         });
     }
 
     public function down(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn(['content', 'github_url', 'demo_url']);
+            $table->dropColumn(['content', 'github_url', 'demo_url', 'views']);
         });
     }
 };
