@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/subscribe',
             'api/contact',
             'api/login',
+            'api/register',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

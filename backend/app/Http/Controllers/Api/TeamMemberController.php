@@ -14,7 +14,7 @@ class TeamMemberController extends Controller
      */
     public function index()
     {
-        $members = TeamMember::orderBy('sort_order')->orderBy('name')->get();
+        $members = TeamMember::approved()->orderBy('sort_order')->orderBy('name')->get();
         return TeamMemberResource::collection($members);
     }
 

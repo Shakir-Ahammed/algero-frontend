@@ -171,6 +171,29 @@
             color: #f87171;
             font-size: 14px;
         }
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+        .register-link a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        .register-link a:hover { color: #93bbfd; }
+
+        .success-msg {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            color: #4ade80;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -237,6 +260,13 @@
                 <p>Sign in to manage your content</p>
             </div>
 
+            @if(session('success'))
+                <div class="success-msg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    {{ session('success') }}
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="error-msg">
                     @foreach($errors->all() as $error)
@@ -266,6 +296,10 @@
 
                 <button type="submit" class="btn-login">Sign In</button>
             </form>
+
+            <div class="register-link">
+                Don't have an account? <a href="/admin/register">Register</a>
+            </div>
         </div>
     </div>
 </body>

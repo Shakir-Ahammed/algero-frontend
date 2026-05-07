@@ -21,7 +21,8 @@
                 <th>Title</th>
                 <th>Category</th>
                 <th>Tech</th>
-                <th>Status</th>
+                <th>Active</th>
+                <th>Approval</th>
                 <th>Featured</th>
                 <th></th>
             </tr>
@@ -51,6 +52,15 @@
                     </span>
                 </td>
                 <td>
+                    @if($project->status === 'approved')
+                        <span class="badge badge-active">Approved</span>
+                    @elseif($project->status === 'rejected')
+                        <span class="badge badge-inactive">Rejected</span>
+                    @else
+                        <span class="badge badge-draft">Pending</span>
+                    @endif
+                </td>
+                <td>
                     @if($project->is_featured)
                         <span class="badge badge-active">
                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:2px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -78,7 +88,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="empty-state">
                         <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>

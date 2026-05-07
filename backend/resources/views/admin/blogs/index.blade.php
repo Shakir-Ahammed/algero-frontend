@@ -41,10 +41,16 @@
                 <td><span class="badge badge-active">{{ $blog->category }}</span></td>
                 <td>{{ $blog->author ?? '—' }}</td>
                 <td>
-                    @if($blog->published_at)
-                        <span class="badge badge-active">Published</span>
+                    @if($blog->status === 'approved')
+                        @if($blog->published_at)
+                            <span class="badge badge-active">Published</span>
+                        @else
+                            <span class="badge badge-active">Approved</span>
+                        @endif
+                    @elseif($blog->status === 'rejected')
+                        <span class="badge badge-inactive">Rejected</span>
                     @else
-                        <span class="badge badge-draft">Draft</span>
+                        <span class="badge badge-draft">Pending</span>
                     @endif
                 </td>
                 <td style="color: var(--text-muted); font-size: 13px;">{{ $blog->published_at?->format('M d, Y') ?? '—' }}</td>

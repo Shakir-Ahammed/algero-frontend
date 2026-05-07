@@ -15,7 +15,8 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        $blogs = Blog::published()
+        $blogs = Blog::approved()
+            ->published()
             ->orderByDesc('published_at')
             ->paginate($request->get('per_page', 15));
 

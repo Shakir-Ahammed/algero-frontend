@@ -15,6 +15,7 @@ class TeamMember extends Model
         'social_twitter',
         'social_github',
         'sort_order',
+        'status',
     ];
 
     /**
@@ -31,5 +32,21 @@ class TeamMember extends Model
             'twitter'  => $this->social_twitter,
             'github'   => $this->social_github,
         ];
+    }
+
+    /**
+     * Scope: only approved team members.
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    /**
+     * Scope: only pending team members.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
     }
 }
