@@ -24,6 +24,9 @@
                 <th>Active</th>
                 <th>Approval</th>
                 <th>Featured</th>
+                @if(Auth::user()->isSuperAdmin())
+                <th>Views</th>
+                @endif
                 <th></th>
             </tr>
         </thead>
@@ -70,6 +73,14 @@
                         <span style="color:var(--text-muted);">—</span>
                     @endif
                 </td>
+                @if(Auth::user()->isSuperAdmin())
+                <td>
+                    <span class="views-count">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {{ number_format($project->views ?? 0) }}
+                    </span>
+                </td>
+                @endif
                 <td>
                     <div class="btn-group">
                         <a href="/admin/projects/{{ $project->id }}/edit" class="btn btn-sm btn-edit">
@@ -88,7 +99,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="8">
+                <td colspan="{{ Auth::user()->isSuperAdmin() ? 9 : 8 }}">
                     <div class="empty-state">
                         <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>

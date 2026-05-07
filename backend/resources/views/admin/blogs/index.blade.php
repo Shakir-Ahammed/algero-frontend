@@ -21,6 +21,9 @@
                 <th>Category</th>
                 <th>Author</th>
                 <th>Status</th>
+                @if(Auth::user()->isSuperAdmin())
+                <th>Views</th>
+                @endif
                 <th>Date</th>
                 <th style="text-align:right">Actions</th>
             </tr>
@@ -53,6 +56,14 @@
                         <span class="badge badge-draft">Pending</span>
                     @endif
                 </td>
+                @if(Auth::user()->isSuperAdmin())
+                <td>
+                    <span class="views-count">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {{ number_format($blog->views ?? 0) }}
+                    </span>
+                </td>
+                @endif
                 <td style="color: var(--text-muted); font-size: 13px;">{{ $blog->published_at?->format('M d, Y') ?? '—' }}</td>
                 <td>
                     <div class="btn-group" style="justify-content: flex-end;">
@@ -72,7 +83,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6">
+                <td colspan="{{ Auth::user()->isSuperAdmin() ? 7 : 6 }}">
                     <div class="empty-state">
                         <div class="icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>

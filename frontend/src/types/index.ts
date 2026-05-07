@@ -3,13 +3,22 @@ import type { ComponentType, SVGProps } from "react";
 export interface Project {
   id: number;
   title: string;
+  slug?: string;
   category: string;
   image: string;
   tech: string[];
   desc: string;
+  content?: string;
+  images?: string[];
   color?: string;
   features?: string[];
   metrics?: { label: string; value: string }[];
+  client?: string;
+  url?: string;
+  github_url?: string;
+  demo_url?: string;
+  featured?: boolean;
+  created_at?: string;
 }
 
 export interface Service {

@@ -42,17 +42,25 @@ class ProjectController extends Controller
     {
         $project = Project::approved()->active()->where('slug', $slug)->firstOrFail();
 
+        // Increment view count
+        $project->increment('views');
+
         return response()->json([
-            'id'       => $project->id,
-            'title'    => $project->title,
-            'slug'     => $project->slug,
-            'category' => $project->category,
-            'image'    => $project->image,
-            'desc'     => $project->description,
-            'tech'     => $project->tech ?? [],
-            'client'   => $project->client,
-            'url'      => $project->url,
-            'featured' => $project->is_featured,
+            'id'         => $project->id,
+            'title'      => $project->title,
+            'slug'       => $project->slug,
+            'category'   => $project->category,
+            'image'      => $project->image,
+            'images'     => $project->images ?? [],
+            'desc'       => $project->description,
+            'content'    => $project->content,
+            'tech'       => $project->tech ?? [],
+            'client'     => $project->client,
+            'url'        => $project->url,
+            'github_url' => $project->github_url,
+            'demo_url'   => $project->demo_url,
+            'featured'   => $project->is_featured,
+            'created_at' => $project->created_at->toISOString(),
         ]);
     }
 }

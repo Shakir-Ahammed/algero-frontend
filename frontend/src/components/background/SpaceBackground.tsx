@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import marsImg from "../../assets/images/mars.png";
+import moonImg from "../../assets/images/moon.png";
 
 const R = (a: number, b: number) => Math.random() * (b - a) + a;
 const L = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -62,6 +64,13 @@ export const SpaceBackground = () => {
     const noMo = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let W = innerWidth, H = innerHeight;
 
+    // Preload planet textures
+    const marsImage = new Image(); marsImage.src = marsImg;
+    const moonImage = new Image(); moonImage.src = moonImg;
+    let marsLoaded = false, moonLoaded = false;
+    marsImage.onload = () => { marsLoaded = true; };
+    moonImage.onload = () => { moonLoaded = true; };
+
     const resize = () => {
       W = innerWidth; H = innerHeight;
       c.width = W * dpr; c.height = H * dpr;
@@ -98,13 +107,13 @@ export const SpaceBackground = () => {
     const TRAIL_MAX_AGE = 3000; // glow fades over 3 seconds
     const TRAIL_INTERVAL = 120; // drop a trail point every 120ms
     const bodies: Body[] = [
-      // Large planet — faster curved orbit, bigger amplitude
+      // Large planet — Mars (faster curved orbit, bigger amplitude)
       { bx: W * 0.18, by: H * 0.55, r: mob ? 18 : 30, rot: 0, rs: 0.0003,
-        seed: 1.3, amp: 80, c1: "#2563eb", c2: "#1e3a5f", kind: "planet", verts: [], blur: 0,
+        seed: 1.3, amp: 80, c1: "#c0442a", c2: "#6b2010", kind: "planet", verts: [], blur: 0,
         trail: [], lastTrailTime: 0 },
-      // Medium planet — different orbit
+      // Medium planet — Moon (different orbit)
       { bx: W * 0.65, by: H * 0.78, r: mob ? 11 : 18, rot: 0, rs: -0.0004,
-        seed: 4.7, amp: 55, c1: "#7c3aed", c2: "#2e1065", kind: "planet", verts: [], blur: 0,
+        seed: 4.7, amp: 55, c1: "#b0b4b8", c2: "#4a4e52", kind: "planet", verts: [], blur: 0,
         trail: [], lastTrailTime: 0 },
       // Large foreground rock — faster drift
       { bx: W * 0.4, by: H * 0.3, r: mob ? 8 : 14, rot: 0, rs: 0.0006,
@@ -268,7 +277,10 @@ export const SpaceBackground = () => {
           if (trailAlpha < 0.002) continue;
           const trailR = b.r * (1.5 + (1 - fade) * 1.5); // grows as it fades
           const tg = ctx.createRadialGradient(tp.x, tp.y, 0, tp.x, tp.y, trailR);
-          const col = b.kind === "planet" ? "59,130,246" : "100,130,180";
+          const bodyIdx = bodies.indexOf(b);
+          const col = b.kind === "planet"
+            ? (bodyIdx === 0 ? "180,80,40" : "160,170,190")
+            : "100,130,180";
           tg.addColorStop(0, `rgba(${col},${trailAlpha})`);
           tg.addColorStop(1, "transparent");
           ctx.fillStyle = tg; ctx.beginPath();
@@ -280,28 +292,47 @@ export const SpaceBackground = () => {
         const litSide = Math.atan2(by - sunY, bx - sunX);
 
         if (b.kind === "planet") {
-          // Atmospheric glow (current position only, not lingering)
+          // Determine which image to use: first planet = Mars, second = Moon
+          const bodyIdx = bodies.indexOf(b);
+          const img = bodyIdx === 0 ? marsImage : moonImage;
+          const loaded = bodyIdx === 0 ? marsLoaded : moonLoaded;
+          const glowCol = bodyIdx === 0 ? "180,60,30" : "160,170,190";
+
+          // Atmospheric glow (tinted per planet)
           const ag = ctx.createRadialGradient(bx, by, b.r * 0.8, bx, by, b.r * 3);
-          ag.addColorStop(0, `rgba(59,130,246,${0.05 + lit * 0.06})`);
+          ag.addColorStop(0, `rgba(${glowCol},${0.06 + lit * 0.08})`);
           ag.addColorStop(1, "transparent");
           ctx.fillStyle = ag; ctx.beginPath(); ctx.arc(bx, by, b.r * 3, 0, TAU); ctx.fill();
 
-          // Body with lit/shadow sides
-          const hlx = bx - Math.cos(litSide) * b.r * 0.35;
-          const hly = by - Math.sin(litSide) * b.r * 0.35;
-          const pg = ctx.createRadialGradient(hlx, hly, 0, bx, by, b.r);
-          pg.addColorStop(0, b.c1);
-          pg.addColorStop(0.7, b.c2);
-          pg.addColorStop(1, "#030712");
-          ctx.globalAlpha = 0.85;
-          ctx.fillStyle = pg; ctx.beginPath(); ctx.arc(bx, by, b.r, 0, TAU); ctx.fill();
+          if (loaded) {
+            // Draw the planet image clipped to a circle
+            ctx.save();
+            ctx.globalAlpha = 0.9;
+            ctx.beginPath(); ctx.arc(bx, by, b.r, 0, TAU); ctx.clip();
+            ctx.drawImage(img, bx - b.r, by - b.r, b.r * 2, b.r * 2);
 
-          // Specular highlight
-          ctx.globalAlpha = 0.2 + lit * 0.15;
-          ctx.fillStyle = "#bfdbfe";
-          ctx.beginPath();
-          ctx.arc(hlx, hly, b.r * 0.3, 0, TAU); ctx.fill();
-          ctx.globalAlpha = 1;
+            // Shadow overlay for sun-lit side
+            const shg = ctx.createRadialGradient(
+              bx - Math.cos(litSide) * b.r * 0.5,
+              by - Math.sin(litSide) * b.r * 0.5,
+              b.r * 0.2, bx, by, b.r);
+            shg.addColorStop(0, "transparent");
+            shg.addColorStop(0.6, "rgba(0,0,0,0.15)");
+            shg.addColorStop(1, "rgba(0,0,0,0.55)");
+            ctx.fillStyle = shg; ctx.beginPath(); ctx.arc(bx, by, b.r, 0, TAU); ctx.fill();
+
+            ctx.restore();
+            ctx.globalAlpha = 1;
+          } else {
+            // Fallback gradient while loading
+            const hlx = bx - Math.cos(litSide) * b.r * 0.35;
+            const hly = by - Math.sin(litSide) * b.r * 0.35;
+            const pg = ctx.createRadialGradient(hlx, hly, 0, bx, by, b.r);
+            pg.addColorStop(0, b.c1); pg.addColorStop(0.7, b.c2); pg.addColorStop(1, "#030712");
+            ctx.globalAlpha = 0.85;
+            ctx.fillStyle = pg; ctx.beginPath(); ctx.arc(bx, by, b.r, 0, TAU); ctx.fill();
+            ctx.globalAlpha = 1;
+          }
         } else {
           // Rock with rotation and lighting
           ctx.save();

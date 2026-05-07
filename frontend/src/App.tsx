@@ -7,6 +7,7 @@ import { HomePage } from "./app/home/HomePage";
 import { AboutPage } from "./app/about/AboutPage";
 import { ServicesPage } from "./app/services/ServicesPage";
 import { ProjectsPage } from "./app/projects/ProjectsPage";
+import { ProjectViewPage } from "./app/projects/ProjectViewPage";
 import { TeamPage } from "./app/team/TeamPage";
 import { BlogPage } from "./app/blog/BlogPage";
 import { BlogViewPage } from "./app/blog/BlogViewPage";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:slug" element={<ProjectViewPage />} />
           <Route path="/team" element={<TeamPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogViewPage />} />

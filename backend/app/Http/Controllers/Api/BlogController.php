@@ -29,6 +29,10 @@ class BlogController extends Controller
     public function show(string $slug)
     {
         $blog = Blog::where('slug', $slug)->firstOrFail();
+
+        // Increment view count
+        $blog->increment('views');
+
         return new BlogResource($blog);
     }
 

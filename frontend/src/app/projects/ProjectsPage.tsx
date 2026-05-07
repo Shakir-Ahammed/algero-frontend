@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
 import { PageHeader } from "../../components/sections/shared/PageHeader";
@@ -6,6 +7,10 @@ import { PROJECTS } from "../../features/projects/project.data";
 import { apiFetch } from "../../lib/api";
 import type { Project } from "../../types";
 import { useSeo } from "../../hooks/useSeo";
+
+function toSlug(title: string) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
 
 export const ProjectsPage = () => {
   const [filter, setFilter] = useState("All");
@@ -58,9 +63,10 @@ export const ProjectsPage = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project, idx) => (
-            <div
+            <Link
+              to={`/projects/${project.slug || toSlug(project.title)}`}
               key={project.id}
-              className="group cursor-pointer reveal"
+              className="group cursor-pointer reveal block"
               style={{ transitionDelay: `${(idx % 3) * 150}ms` }}
             >
               <div className="relative h-72 rounded-2xl overflow-hidden mb-6 border border-white/10">
@@ -99,10 +105,11 @@ export const ProjectsPage = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
     </div>
   );
 };
+

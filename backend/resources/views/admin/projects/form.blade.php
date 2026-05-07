@@ -45,9 +45,15 @@
             </div>
 
             <div class="form-group full">
-                <label for="description">Description</label>
+                <label for="description">Short Description</label>
                 <textarea id="description" name="description" class="form-control" rows="3"
                           placeholder="Brief project description...">{{ old('description', $project?->description) }}</textarea>
+            </div>
+
+            <div class="form-group full">
+                <label for="content">Detailed Content (HTML)</label>
+                <textarea id="content" name="content" class="form-control" rows="8"
+                          placeholder="<h2>Overview</h2><p>Write a detailed project description...</p>">{{ old('content', $project?->content) }}</textarea>
             </div>
 
             <div class="form-group full">
@@ -64,9 +70,21 @@
             </div>
 
             <div class="form-group">
-                <label for="url">Project URL</label>
-                <input type="text" id="url" name="url" class="form-control"
-                       value="{{ old('url', $project?->url) }}" placeholder="https://project-demo.com">
+                <label for="url">Site URL</label>
+                <input type="url" id="url" name="url" class="form-control"
+                       value="{{ old('url', $project?->url) }}" placeholder="https://project-site.com">
+            </div>
+
+            <div class="form-group">
+                <label for="demo_url">Demo URL</label>
+                <input type="url" id="demo_url" name="demo_url" class="form-control"
+                       value="{{ old('demo_url', $project?->demo_url) }}" placeholder="https://demo.project.com">
+            </div>
+
+            <div class="form-group">
+                <label for="github_url">GitHub URL</label>
+                <input type="url" id="github_url" name="github_url" class="form-control"
+                       value="{{ old('github_url', $project?->github_url) }}" placeholder="https://github.com/org/repo">
             </div>
 
             <div class="form-group">
