@@ -35,6 +35,7 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsActive::class])->pre
     Route::get('/team/{id}/edit', [AdminController::class, 'editTeamMember'])->name('admin.team.edit');
     Route::put('/team/{id}', [AdminController::class, 'updateTeamMember']);
     Route::delete('/team/{id}', [AdminController::class, 'deleteTeamMember']);
+    Route::post('/team/reorder', [AdminController::class, 'reorderTeamMembers'])->name('admin.team.reorder');
 
     // Services
     Route::get('/services', [AdminController::class, 'services'])->name('admin.services');

@@ -286,6 +286,21 @@ class AdminController extends Controller
         return redirect('/admin/team')->with('success', 'Team member deleted.');
     }
 
+    public function reorderTeamMembers(Request $request)
+    {
+        $request->validate([
+            'order'            => 'required|array',
+            'order.*.id'       => 'required|integer|exists:team_members,id',
+            'order.*.position' => 'required|integer|min:0',
+        ]);
+
+        foreach ($request->input('order') as $item) {
+            TeamMember::where('id', $item['id'])->update(['sort_order' => $item['position']]);
+        }
+
+        return response()->json(['message' => 'Order updated successfully.']);
+    }
+
     // ─── Services ─────────────────────────────────────────
 
     public function services()
