@@ -24,7 +24,7 @@ services:
       SANCTUM_STATEFUL_DOMAINS: localhost:3000,localhost:8000
       FRONTEND_URL: http://localhost:3000
       ADMIN_EMAIL: admin@algero.com
-      ADMIN_PASSWORD: password
+      ADMIN_PASSWORD: "P@ssw0rd!"
       MAIL_MAILER: log
       MAIL_HOST: 127.0.0.1
       MAIL_PORT: 2525
