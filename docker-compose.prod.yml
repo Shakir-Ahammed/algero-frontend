@@ -27,7 +27,7 @@ services:
     environment:
       APP_NAME: Algero
       APP_ENV: production
-      APP_KEY: base64:CHANGE_ME_GENERATE_A_NEW_KEY
+      APP_KEY: "base64:F76izwMnPowJyam77F6Q5cEt92a7o9mA5g5UiEvquCo="
       APP_DEBUG: "true"
       APP_URL: https://algero-backend.bitbd.net
       DB_CONNECTION: pgsql
