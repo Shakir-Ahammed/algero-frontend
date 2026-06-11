@@ -20,7 +20,7 @@ services:
 
   # ─── Laravel Backend ────────────────────────────────────────
   backend:
-    image: shafiunmiraz/algero:backend-v1
+    image: shafiunmiraz/algero:backend-v2
     container_name: algero-backend
     ports:
       - "8000:8000"
@@ -61,7 +61,7 @@ services:
 
   # ─── React Frontend ────────────────────────────────────────
   frontend:
-    image: shafiunmiraz/algero:frontend-v1
+    image: shafiunmiraz/algero:frontend-v2
     container_name: algero-frontend
     ports:
       - "3000:80"
