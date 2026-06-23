@@ -23,8 +23,8 @@ from app.modules.service.models import Service
 from app.modules.subscriber.models import Subscriber
 from app.modules.team_member.models import TeamMember
 
-SUPER_ADMIN_EMAIL = os.getenv("SEED_ADMIN_EMAIL", "admin@algero.test")
-SUPER_ADMIN_PASSWORD = os.getenv("SEED_ADMIN_PASSWORD", "password123")
+SUPER_ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", os.getenv("SEED_ADMIN_EMAIL", "admin@algero.test"))
+SUPER_ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", os.getenv("SEED_ADMIN_PASSWORD", "password123"))
 SEED_DEMO = os.getenv("SEED_DEMO", "true").lower() == "true"
 
 

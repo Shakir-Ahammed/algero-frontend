@@ -8,5 +8,8 @@ alembic upgrade head 2>&1 || {
   alembic stamp head 2>&1 || true
 }
 
+echo "Seeding admin user + demo content..."
+python -m scripts.seed
+
 echo "Starting uvicorn..."
 exec uvicorn app.main:app --host 0.0.0.0 --port 8000
