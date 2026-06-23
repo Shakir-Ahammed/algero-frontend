@@ -1,40 +1,28 @@
 services:
-  # ─── Laravel Backend ────────────────────────────────────────
+  # ─── FastAPI Backend (standalone) ───────────────────────────
   backend:
-    image: shafiunmiraz/algero:backend-v1
+    build:
+      context: ./backend-fastapi
+      dockerfile: Dockerfile
     container_name: algero-backend
     ports:
       - "8000:8000"
     environment:
       APP_NAME: Algero
       APP_ENV: production
-      APP_KEY: base64:CHANGE_ME_GENERATE_A_NEW_KEY
-      APP_DEBUG: false
-      APP_URL: http://localhost:8000
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_DATABASE: algero
-      DB_USERNAME: algero
-      DB_PASSWORD: algero_secret
-      BCRYPT_ROUNDS: 12
-      SESSION_DRIVER: database
-      CACHE_STORE: database
-      QUEUE_CONNECTION: database
-      SANCTUM_STATEFUL_DOMAINS: localhost:3000,localhost:8000
-      FRONTEND_URL: http://localhost:3000
+      DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://algero:algero@postgres:5432/algero
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 10080
+      CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+      RECAPTCHA_SECRET: ""
+      UPLOAD_DIR: /app/uploads
+      PUBLIC_BASE_URL: http://localhost:8000
       ADMIN_EMAIL: admin@algero.com
-      ADMIN_PASSWORD: "P@ssw0rd!"
-      MAIL_MAILER: log
-      MAIL_HOST: 127.0.0.1
-      MAIL_PORT: 2525
-      MAIL_USERNAME: "null"
-      MAIL_PASSWORD: "null"
-      MAIL_FROM_ADDRESS: hello@algero.com
-      MAIL_FROM_NAME: Algero
-      RECAPTCHA_SECRET_KEY: ""
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-P@ssw0rd!}
     volumes:
-      - uploads:/var/www/html/storage/app/public
+      - uploads:/app/uploads
     restart: unless-stopped
 
 volumes:

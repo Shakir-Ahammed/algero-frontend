@@ -70,25 +70,25 @@ endpoints slice so we have a proven pattern to repeat.
 - ✅ Middlewares → FastAPI dependencies (active user, super admin)
 - ✅ Seed data scripts (admin, demo content)
 
-## Phase 3 — React admin panel ⬜
+## Phase 3 — React admin panel ✅
 
-- ⬜ Admin routing (`/admin/*`) + protected routes
-- ⬜ Auth context + token storage + API client with auth
-- ⬜ Admin layout (sidebar/nav) replacing `admin/layout.blade.php`
-- ⬜ Login + register pages
-- ⬜ Dashboard
-- ⬜ CRUD pages: blogs, team, services, projects
-- ⬜ Subscribers + leads views
-- ⬜ Super-admin: approvals + users
-- ⬜ Image upload component
+- ✅ Admin routing (`/admin/*`) + protected routes
+- ✅ Auth context + token storage + API client with auth
+- ✅ Admin layout (sidebar/nav) replacing `admin/layout.blade.php`
+- ✅ Login + register pages
+- ✅ Dashboard
+- ✅ CRUD pages: blogs, team, services, projects
+- ✅ Subscribers + leads views
+- ✅ Super-admin: approvals + users
+- ✅ Image upload component
 
-## Phase 4 — Cutover & cleanup ⬜
+## Phase 4 — Cutover & cleanup 🟦
 
-- ⬜ Update docker-compose (replace Laravel service with FastAPI)
-- ⬜ Update Dockerfiles + nginx
-- ⬜ Env files / `.env.example`
+- ✅ Update docker-compose (replace Laravel service with FastAPI)
+- ✅ Update Dockerfiles + nginx
+- ✅ Env files / `.env.example`
 - ⬜ Remove old Laravel `backend/` after parity verification
-- ⬜ Update root + frontend READMEs
+- ✅ Update root + frontend READMEs
 
 ---
 
@@ -101,3 +101,16 @@ endpoints slice so we have a proven pattern to repeat.
   Subscriber, ContactLead. Super-admin endpoints (dashboard, approvals, user management, image
   upload). Alembic migration for all new tables generated + applied. Seed script updated with
   demo content. 36 API routes registered and verified via OpenAPI schema.
+- 2026-06-23: **Phase 3 complete.** React admin panel built: AuthProvider (JWT localStorage),
+  admin-api client with auth headers + 401 redirect, ProtectedRoute guard, AdminLayout with
+  responsive sidebar (role-based nav for super-admin), Login/Register pages, Dashboard with
+  stats cards, CRUD list pages (blogs, team, services, projects), Subscribers & Leads views
+  (leads with detail panel), Super-admin Approvals (approve/reject workflow) & Users management
+  (activate/deactivate), ImageUpload component (drag-drop). All in `features/admin/`.
+- 2026-06-23: **Phase 4 in progress.** Docker/infra cutover: Created `backend-fastapi/Dockerfile`
+  (Python 3.12-slim, runs Alembic + uvicorn). Updated all docker-compose files (`docker-compose.yml`,
+  `docker-compose.prod.yml`, `docker-compose.backend.yml`) to use FastAPI backend instead of Laravel.
+  Updated frontend `nginx.conf` to proxy `/api/*` and `/uploads/*` to backend. Updated root
+  `.env.example` (FastAPI vars, removed Laravel/Sanctum). Updated `frontend/README.md` (admin panel
+  docs, project structure) and `backend-fastapi/README.md` (full module layout, env vars table).
+  Pending: remove old `backend/` after parity verification.
