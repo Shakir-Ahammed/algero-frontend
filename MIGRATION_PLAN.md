@@ -58,17 +58,17 @@ endpoints slice so we have a proven pattern to repeat.
 - Auth uses stateless **JWT bearer** tokens; logout is client-side token discard (no server token table).
 - Run: `python -m scripts.seed` then `uvicorn app.main:app --reload`. Smoke test: `python -m scripts.smoke_test`.
 
-## Phase 2 — Remaining backend modules ⬜
+## Phase 2 — Remaining backend modules ✅
 
-- ⬜ TeamMember module (+ approval workflow, social shape)
-- ⬜ Service module
-- ⬜ Project module (+ approval workflow, views)
-- ⬜ Subscriber module
-- ⬜ ContactLead module (+ reCAPTCHA)
-- ⬜ Super-admin: approvals + user management endpoints
-- ⬜ Image upload endpoint
-- ⬜ Middlewares → FastAPI dependencies (active user, super admin)
-- ⬜ Seed data scripts (admin, demo content)
+- ✅ TeamMember module (+ approval workflow, social shape)
+- ✅ Service module
+- ✅ Project module (+ approval workflow, views)
+- ✅ Subscriber module
+- ✅ ContactLead module (+ reCAPTCHA)
+- ✅ Super-admin: approvals + user management endpoints
+- ✅ Image upload endpoint
+- ✅ Middlewares → FastAPI dependencies (active user, super admin)
+- ✅ Seed data scripts (admin, demo content)
 
 ## Phase 3 — React admin panel ⬜
 
@@ -97,3 +97,7 @@ endpoints slice so we have a proven pattern to repeat.
 - 2026-06-21: Plan created. Scanned Laravel backend + React frontend. Began Phase 1.
 - 2026-06-21: **Phase 1 complete.** FastAPI skeleton + Auth + Blog vertical slice built and
   verified (smoke test green, Alembic migration applies). Ready to start Phase 2 (remaining modules).
+- 2026-06-21: **Phase 2 complete.** All backend modules ported: Service, TeamMember, Project,
+  Subscriber, ContactLead. Super-admin endpoints (dashboard, approvals, user management, image
+  upload). Alembic migration for all new tables generated + applied. Seed script updated with
+  demo content. 36 API routes registered and verified via OpenAPI schema.
