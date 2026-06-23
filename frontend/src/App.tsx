@@ -59,29 +59,36 @@ export default function App() {
         }
       />
 
-      {/* Admin routes */}
-      <Route path="/admin/login" element={<LoginPage />} />
-      <Route path="/admin/register" element={<RegisterPage />} />
+      {/* Admin routes — AuthProvider wraps all /admin so login/register can use useAuth */}
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
           <AuthProvider>
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
+            <Routes>
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route
+                path="*"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<DashboardPage />} />
+                <Route path="blogs" element={<BlogsPage />} />
+                <Route path="team" element={<AdminTeamPage />} />
+                <Route path="services" element={<AdminServicesPage />} />
+                <Route path="projects" element={<AdminProjectsPage />} />
+                <Route path="subscribers" element={<SubscribersPage />} />
+                <Route path="leads" element={<LeadsPage />} />
+                <Route path="approvals" element={<ApprovalsPage />} />
+                <Route path="users" element={<UsersPage />} />
+              </Route>
+            </Routes>
           </AuthProvider>
         }
-      >
-        <Route index element={<DashboardPage />} />
-        <Route path="blogs" element={<BlogsPage />} />
-        <Route path="team" element={<AdminTeamPage />} />
-        <Route path="services" element={<AdminServicesPage />} />
-        <Route path="projects" element={<AdminProjectsPage />} />
-        <Route path="subscribers" element={<SubscribersPage />} />
-        <Route path="leads" element={<LeadsPage />} />
-        <Route path="approvals" element={<ApprovalsPage />} />
-        <Route path="users" element={<UsersPage />} />
-      </Route>
+      />
     </Routes>
   );
 }
